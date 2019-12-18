@@ -2,6 +2,7 @@ package com.example.salestracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
 
-    private String[] keywords;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,19 +23,23 @@ public class MainActivity extends AppCompatActivity {
 
         final EditText SearchPlain = findViewById(R.id.searchPlain);
         final Button SearchBtn = findViewById( R.id.searchBtn );
-        final TextView test = findViewById(R.id.textTest);
+        final TextView test = findViewById(R.id.textTest); //Just a view for testing
 
 
         SearchBtn.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String keywordsInput = SearchPlain.getText().toString();
-                keywords = keywordsInput.split( " ");
+                String keywordsInput = SearchPlain.getText().toString(); //Take input from user
 
-                for(int i = 0; i < keywords.length; i ++){
-                    test.append(keywords[i] + " ");
-                }
+
+                //Transfer user's input to the RequestActivity
+                Intent intent = new Intent( MainActivity.this, RequestEbay.class);
+                intent.putExtra("keywords", keywordsInput);
+
+                startActivity(intent);
             }
         } );
+
+
     }
 }
