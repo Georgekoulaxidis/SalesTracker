@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 //Transfer user's input to the RequestActivity
-                Intent intent = new Intent( MainActivity.this, RequestEbay.class);
+                Intent intent = new Intent( MainActivity.this, RequestActivity.class);
                 intent.putExtra("keywords", keywordsInput);
 
                 startActivity(intent);
