@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class RequestActivity extends AppCompatActivity {
 
 
-    public String YT_KEY = "Dionisis-SmartSho-PRD-0388a6d5f-56b83621";
     private String keywords;
 
     @Override
@@ -32,14 +31,11 @@ public class RequestActivity extends AppCompatActivity {
             keywordInput = extras.getString( "keywords" );
         }
 
-        keywords = keywordInput.replace(" ", "%20");
-        keywords.replace(" ", "%20");
+       //keywords = keywordInput.replace(" ", "%20");
 
-        FetchProductsTask task = new FetchProductsTask(keywords, testTextView);
+
+        FetchProductsTask task = new FetchProductsTask(keywordInput, testTextView);
         task.execute();
-
-
-        //Request request = new Request.Builder()
 
     }
 }
