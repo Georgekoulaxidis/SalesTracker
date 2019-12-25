@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +20,7 @@ public class FetchProductsTask extends AsyncTask<String, Void, String> {
     private String keyword;
     private String jsonString;
     TextView jsonResultTextView;
+    GsonProduct product;
 
     public FetchProductsTask(String keywords, TextView jsonRexultTxtView) {
         keyword = keywords;
@@ -41,6 +44,7 @@ public class FetchProductsTask extends AsyncTask<String, Void, String> {
             String dataType = "RESPONSE-DATA-FORMAT";
             String payload = "REST-PAYLOAD";
             String keywordsParam = "keywords";
+            String pages = "paginationInput.entriesPerPage";
 
             Uri builtUri = Uri.parse(basicUrl).buildUpon()
                     .appendQueryParameter(operation, "findItemsByKeywords")
@@ -49,6 +53,7 @@ public class FetchProductsTask extends AsyncTask<String, Void, String> {
                     .appendQueryParameter(dataType, "JSON")
                     .appendQueryParameter(payload,"")
                     .appendQueryParameter(keywordsParam, keyword)
+                    .appendQueryParameter( pages, "2" )
                     .build();
 
             URL url = new URL(builtUri.toString());
@@ -79,6 +84,9 @@ public class FetchProductsTask extends AsyncTask<String, Void, String> {
 
             jsonString = buffer.toString();
             Log.v(LOG_TAG, "Forecast JSON String: " + jsonString);
+            Gson gson = new Gson();
+            product = gson.fromJson(jsonString, GsonProduct.class);
+
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attemping
@@ -97,13 +105,13 @@ public class FetchProductsTask extends AsyncTask<String, Void, String> {
             }
         }
 
-        return jsonString;
+        return product.getFindItemsByKeywordsResponse().get(0).getSearchResult().get(0).getItem().get(0).getTitle( 0 );
     }
 
     @Override
     protected void onPostExecute(String s) {
         if(s != null) {
-            jsonResultTextView.setText(jsonString);
+            jsonResultTextView.setText(product.getFindItemsByKeywordsResponse().get(0).getSearchResult().get(0).getItem().get(0).getTitle( 0 ));
         }
     }
 }
