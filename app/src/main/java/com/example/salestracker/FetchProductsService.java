@@ -29,7 +29,7 @@ public class FetchProductsService extends JobService {
                 notificationManager.notify(1, builder.build());*/
 
                 Log.d("BootReceiver", "Thread running");
-                jobFinished(params, true);      //ΤΙ ΠΑΙΖΕΙ ΕΔΩ?
+                jobFinished(params, true);
             }
         }).start();
     }
@@ -37,6 +37,6 @@ public class FetchProductsService extends JobService {
     @Override
     public boolean onStopJob(JobParameters params) {
         Log.v("BootReceiver", "Job cancelled");
-        return true;     //ΤΙ ΠΑΙΖΕΙ ΕΔΩ?
+        return true;
     }
 }
