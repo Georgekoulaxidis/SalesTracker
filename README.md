@@ -2,7 +2,7 @@
 
 Filters to use:
   AvailableTo
-  BestOfferOnly (secret technique when things goes hard)
+  BestOfferOnly (secret technique when things get hard)
   Currency
   Condition
   FeedbackScoreMax
