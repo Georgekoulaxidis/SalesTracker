@@ -1,6 +1,6 @@
 # SalesTracker
 
-# Filters to use:
+Filters to use:
   AvailableTo
   BestOfferOnly (secret technique when things get hard)
   Currency
@@ -15,7 +15,7 @@
   MaxPrice
   MinPrice
 
-# Hot filters:
+Hot filters:
   AvailableTo (plaintext that the user will insert the country and we will have find the country's code)
   Condition (RadioButton)
   FreeShippingOnly (RadioButton, if it's marked print a button to the next activity for statistic metrics)
