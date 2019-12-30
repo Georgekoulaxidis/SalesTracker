@@ -9,15 +9,7 @@ public class GsonProduct {
     private List<ItemsByKeywords> findItemsByKeywordsResponse;
 
 
-    public GsonProduct(List<ItemsByKeywords> findItemsByKeywordsResponse){
-        super();
-        this.findItemsByKeywordsResponse = findItemsByKeywordsResponse;
-
-    }
-
     public class ItemsByKeywords{
-
-
 
         //private List<String> ack;
         //private List<String> version;
@@ -26,10 +18,7 @@ public class GsonProduct {
         //private List<String> paginationOutput;
         //private List<String> itemSearchUrl;
 
-        public ItemsByKeywords(List<searchResult> searchResult){
-            super();
-            this.searchResult = searchResult;
-        }
+
 
         /*public List<String> getAck() {
             return ack;
@@ -84,17 +73,12 @@ public class GsonProduct {
 
         private List<item> item;
 
-        public searchResult(List<item> item){
-            super();
-            this.item = item;
-        }
 
         public List<item> getItem() {
             return item;
         }
 
         public void setItem(List<item> item) {
-            Log.d("Dennis", String.valueOf(item));
             this.item = item;
         }
 
@@ -113,7 +97,7 @@ public class GsonProduct {
         private List<String> postalCode;
         private List<String> location;
         private List<String> country;
-        //private List<String> shippingInfo;
+        private List<shipping> shippingInfo;
         //private List<String> sellingStatus;
         //private List<String> listingInfo;
         private List<Boolean> returnsAccepted;
@@ -121,22 +105,7 @@ public class GsonProduct {
         private List<Boolean> isMultiVariationListing;
         private List<Boolean> topRatedListing;
 
-        public item(List<String> itemId, List<String> title, List<String> globalId, List<String> galleryURL, List<String> viewItemURL, List<String> paymentMethod, List<Boolean> autoPay, List<String> postalCode, List<String> location, List<String> country, List<Boolean> returnsAccepted, List<Boolean> isMultiVariationListing, List<Boolean> topRatedListing) {
-            super();
-            this.itemId = itemId;
-            this.title = title;
-            this.globalId = globalId;
-            this.galleryURL = galleryURL;
-            this.viewItemURL = viewItemURL;
-            this.paymentMethod = paymentMethod;
-            this.autoPay = autoPay;
-            this.postalCode = postalCode;
-            this.location = location;
-            this.country = country;
-            this.returnsAccepted = returnsAccepted;
-            this.isMultiVariationListing = isMultiVariationListing;
-            this.topRatedListing = topRatedListing;
-        }
+
 
         public List<String> getItemId() {
             return itemId;
@@ -234,14 +203,14 @@ public class GsonProduct {
             this.country = country;
         }
 
-        /*public List<String> getShippingInfo() {
+        public List<shipping> getShippingInfo() {
             return shippingInfo;
         }
 
-        public void setShippingInfo(List<String> shippingInfo) {
+        public void setShippingInfo(List<shipping> shippingInfo) {
             this.shippingInfo = shippingInfo;
         }
-
+        /*
         public List<String> getSellingStatus() {
             return sellingStatus;
         }
@@ -288,6 +257,39 @@ public class GsonProduct {
 
         public void setTopRatedListing(List<Boolean> topRatedListing) {
             this.topRatedListing = topRatedListing;
+        }
+    }
+
+    public class shipping{
+        private List<shippingCost> shippingServiceCost;
+
+        public List<shippingCost> getShippingServiceCost() {
+            return shippingServiceCost;
+        }
+
+        public void setShippingServiceCost(List<shippingCost> shippingServiceCost) {
+            this.shippingServiceCost = shippingServiceCost;
+        }
+    }
+
+    public class shippingCost{
+        private String currencyId;
+        private double __value__;
+
+        public String getCurrencyId() {
+            return currencyId;
+        }
+
+        public void setCurrencyId(String currencyId) {
+            this.currencyId = currencyId;
+        }
+
+        public double get__value__() {
+            return __value__;
+        }
+
+        public void set__value__(double __value__) {
+            this.__value__ = __value__;
         }
     }
 

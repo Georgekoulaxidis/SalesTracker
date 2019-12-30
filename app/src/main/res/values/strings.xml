@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">SalesTracker</string>
+    <string name="Currency">Choose Currency</string>
+
+    <string-array name="curruncies">
+        <item>$</item>
+        <item>"\u20ac"</item>
+        <item>"\u00a3"</item>
+    </string-array>
 </resources>
