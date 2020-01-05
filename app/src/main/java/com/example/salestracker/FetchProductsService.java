@@ -10,8 +10,8 @@ public class FetchProductsService extends JobService {
     public boolean onStartJob(JobParameters params) {
         Log.d("BootReceiver", "Job started");
         //doBackgroundWork(params, this);
-        FetchProductsTask task = new FetchProductsTask("aKeyword", null);
-        task.execute();
+        //FetchProductsTask task = new FetchProductsTask("aKeyword", null);
+        //task.execute();
 
         return false;
     }

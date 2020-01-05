@@ -37,7 +37,7 @@ public class FetchProductsTask extends AsyncTask<String, Void, GsonProduct> {
     private List<String> items = new ArrayList<>();
 
 
-    public FetchProductsTask(Context context, String keywords, ListView productsList, String newProduct, String usedProduct, boolean freeShipping, boolean payment, String min, String max, String currency) {
+    public FetchProductsTask(Context context, String keywords, String newProduct, boolean freeShipping, boolean payment, String min, String max, String currency) {
         keyword = keywords;
         this.context = context;
         this.productsList = productsList;
@@ -149,7 +149,7 @@ public class FetchProductsTask extends AsyncTask<String, Void, GsonProduct> {
         return product;
     }
 
-
+    /*
     @Override
     protected void onPostExecute(GsonProduct p) {
         if(p != null) {
@@ -158,5 +158,5 @@ public class FetchProductsTask extends AsyncTask<String, Void, GsonProduct> {
             
         }
 
-    }
+    }*/
 }

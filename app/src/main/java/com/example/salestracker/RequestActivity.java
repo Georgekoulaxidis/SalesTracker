@@ -65,8 +65,8 @@ public class RequestActivity extends AppCompatActivity {
 
 
 
-        FetchProductsTask task = new FetchProductsTask(context, keywordInput, productsList, newProduct, usedProduct, freeShipping, payment, min, max, currency);
-        task.execute();
+        //FetchProductsTask task = new FetchProductsTask(context, keywordInput, productsList, newProduct, usedProduct, freeShipping, payment, min, max, currency);
+        //task.execute();
 
     }
 }
