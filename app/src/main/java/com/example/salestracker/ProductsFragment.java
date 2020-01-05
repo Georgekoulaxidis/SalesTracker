@@ -34,7 +34,7 @@ public class ProductsFragment extends Fragment {
         testText = getArguments().getString("json");
         //Log.d("Dennis",testText);
 
-        EditText justText = view.findViewById(R.id.titleTxt);
+        TextView justText = view.findViewById(R.id.titleTxt);
 
         justText.setText( testText );
 
