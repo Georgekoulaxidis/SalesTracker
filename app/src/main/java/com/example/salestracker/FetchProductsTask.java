@@ -67,6 +67,7 @@ public class FetchProductsTask extends AsyncTask<String, Void, GsonProduct> {
             String dataType = "RESPONSE-DATA-FORMAT";
             String payload = "REST-PAYLOAD";
             String keywordsParam = "keywords";
+            String outputSelectorParam = "outputSelector";
             String pages = "paginationInput.entriesPerPage";
             String filterName = "itemFilter.name";
             String filterValue = "itemFilter.value";
@@ -79,6 +80,7 @@ public class FetchProductsTask extends AsyncTask<String, Void, GsonProduct> {
                     .appendQueryParameter(dataType, "JSON")
                     .appendQueryParameter(payload,"")
                     .appendQueryParameter(keywordsParam, keyword)
+                    .appendQueryParameter(outputSelectorParam, "SellerInfo")
                     .appendQueryParameter(filterName, "FreeShippingOnly")
                     .appendQueryParameter(filterValue, freeShipping)
                     .appendQueryParameter(filterName, "Condition")

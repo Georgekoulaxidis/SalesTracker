@@ -98,7 +98,8 @@ public class GsonProduct {
         private List<String> location;
         private List<String> country;
         private List<shipping> shippingInfo;
-        //private List<String> sellingStatus;
+         private List<Status> sellingStatus;
+         private List<Seller> sellerInfo;
         //private List<String> listingInfo;
         private List<Boolean> returnsAccepted;
         //private List<String> condition;
@@ -210,15 +211,16 @@ public class GsonProduct {
         public void setShippingInfo(List<shipping> shippingInfo) {
             this.shippingInfo = shippingInfo;
         }
+
+        public List<Status> getSellingStatus() { return sellingStatus; }
+
+        public void setSellingStatus(List<Status> sellingStatus) { this.sellingStatus = sellingStatus; }
+
+        public List<Seller> getSellerInfo() { return sellerInfo; }
+
+        public void setSellerInfo(List<Seller> sellerInfo) { this.sellerInfo = sellerInfo; }
+
         /*
-        public List<String> getSellingStatus() {
-            return sellingStatus;
-        }
-
-        public void setSellingStatus(List<String> sellingStatus) {
-            this.sellingStatus = sellingStatus;
-        }
-
         public List<String> getListingInfo() {
             return listingInfo;
         }
@@ -258,6 +260,24 @@ public class GsonProduct {
         public void setTopRatedListing(List<Boolean> topRatedListing) {
             this.topRatedListing = topRatedListing;
         }
+    }
+
+    public class Status {
+        private List<CurrentPrice> currentPrice;
+
+        public List<CurrentPrice> getProductsPrice() { return currentPrice; }
+    }
+
+    public class CurrentPrice {
+        private double __value__;
+
+        public double getPrice() { return __value__; }
+    }
+
+    public class Seller {
+        private List<String> sellerUserName;
+
+        public String getSellerUsername(int i) { return sellerUserName.get(i); }
     }
 
     public class shipping{
