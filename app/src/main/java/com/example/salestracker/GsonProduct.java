@@ -1,7 +1,9 @@
 package com.example.salestracker;
 
-import android.util.Log;
-
+import android.annotation.SuppressLint;
+import android.os.Parcel;
+import android.os.Parcelable;
+import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class GsonProduct {
@@ -72,7 +74,16 @@ public class GsonProduct {
     public class searchResult{
 
         private List<item> item;
+        @SerializedName("@count")
+        private Integer count;
 
+        public Integer getCount() {
+            return count;
+        }
+
+        public void setCount(Integer count) {
+            this.count = count;
+        }
 
         public List<item> getItem() {
             return item;
@@ -84,7 +95,8 @@ public class GsonProduct {
 
     }
 
-     public class item{
+     @SuppressLint("ParcelCreator")
+     public class item extends GsonProduct implements Parcelable {
         private List<String> itemId;
         private List<String> title;
         private List<String> globalId;
@@ -98,7 +110,7 @@ public class GsonProduct {
         private List<String> location;
         private List<String> country;
         private List<shipping> shippingInfo;
-        //private List<String> sellingStatus;
+        private List<SellingStatus> sellingStatus;
         //private List<String> listingInfo;
         private List<Boolean> returnsAccepted;
         //private List<String> condition;
@@ -139,8 +151,8 @@ public class GsonProduct {
             this.primaryCategory = primaryCategory;
         }*/
 
-        public List<String> getGalleryURL() {
-            return galleryURL;
+        public String getGalleryURL(int i) {
+            return galleryURL.get(i);
         }
 
         public void setGalleryURL(List<String> galleryURL) {
@@ -210,22 +222,22 @@ public class GsonProduct {
         public void setShippingInfo(List<shipping> shippingInfo) {
             this.shippingInfo = shippingInfo;
         }
-        /*
-        public List<String> getSellingStatus() {
+
+        public List<SellingStatus> getSellingStatus() {
             return sellingStatus;
         }
 
-        public void setSellingStatus(List<String> sellingStatus) {
+        public void setSellingStatus(List<SellingStatus> sellingStatus) {
             this.sellingStatus = sellingStatus;
         }
-
+        /*
         public List<String> getListingInfo() {
             return listingInfo;
         }
 
         public void setListingInfo(List<String> listingInfo) {
             this.listingInfo = listingInfo;
-        }*/
+        }
 
         public List<Boolean> getReturnsAccepted() {
             return returnsAccepted;
@@ -235,7 +247,7 @@ public class GsonProduct {
             this.returnsAccepted = returnsAccepted;
         }
 
-        /*public List<String> getCondition() {
+        public List<String> getCondition() {
             return condition;
         }
 
@@ -258,7 +270,50 @@ public class GsonProduct {
         public void setTopRatedListing(List<Boolean> topRatedListing) {
             this.topRatedListing = topRatedListing;
         }
-    }
+
+         @Override
+         public int describeContents() {
+             return 0;
+         }
+
+         @Override
+         public void writeToParcel(Parcel parcel, int i) {
+
+         }
+     }
+
+     public class SellingStatus{
+        private List<PriceDetails> currentPrice;
+
+         public List<PriceDetails> getPriceDetails() {
+             return currentPrice;
+         }
+
+         public void setPriceDetails(List<PriceDetails> priceDetails) {
+             this.currentPrice = priceDetails;
+         }
+     }
+
+     public class PriceDetails{
+        private String currency;
+        private double __value__;
+
+         public String getCurrency() {
+             return currency;
+         }
+
+         public void setCurrency(String currency) {
+             this.currency = currency;
+         }
+
+         public double get__value__() {
+             return __value__;
+         }
+
+         public void set__value__(double __value__) {
+             this.__value__ = __value__;
+         }
+     }
 
     public class shipping{
         private List<shippingCost> shippingServiceCost;

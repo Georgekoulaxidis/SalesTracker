@@ -1,6 +1,5 @@
 package com.example.salestracker;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +10,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.NonNull;
@@ -29,7 +32,8 @@ public class SearchFragment extends Fragment {
     private EditText minPlain;
     private EditText maxPlain;
     private String keywords = new String();
-    private String newProduct = new String();
+    private String newProduct;
+    private String usedProduct;
     private boolean freeShipping = false;
     private boolean payment = false;
     private String min = new String();
@@ -37,7 +41,7 @@ public class SearchFragment extends Fragment {
     private String currency = new String();
 
     private FetchProductsTask task;
-    private GsonProduct item;
+    private ArrayList<GsonProduct.item> item = new ArrayList<>();
 
     //private OnFragmentInteractionListener mListener;
 
@@ -60,19 +64,43 @@ public class SearchFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 keywords = searchPlain.getText().toString(); //Take input from user
-                if (newBox.isChecked())
+                if (newBox.isChecked() && !usedBox.isChecked()) {
+                    usedProduct = "1000";
+                    newProduct = "1000";
+                }
+                else if(!newBox.isChecked() && usedBox.isChecked()) {
+                    usedProduct = "3000";
+                    newProduct = "3000";
+                }
+                else if(newBox.isChecked() && usedBox.isChecked()){
+                    usedProduct = "3000";
+                    newProduct = "1000";
+                }
+                else {
                     newProduct = "New";
+                    usedProduct = "Used";
+                }
+
                 Log.d( "Dennis", String.valueOf( newProduct ) );
                 freeShipping = freeShippingBox.isChecked();
                 payment = paymentBox.isChecked();
                 min = minPlain.getText().toString();
+                if(min.isEmpty())
+                    min = "0.0";
                 max = maxPlain.getText().toString();
+                if(max.isEmpty())
+                    max = "999999999999999.0";
                 currency = (String) currencySpinner.getSelectedItem();
 
                 MainActivity mHelper = (MainActivity) getActivity();
                 //Intent intent = new Intent(getActivity().getBaseContext(), MainActivity.class);
                 //intent.putExtra("item", GetJson());
-                mHelper.ReceiveJson( GetJson() );
+
+                item = GetJson();
+                //if(item.size() != 0)
+                mHelper.ReceiveJson( item );
+                //else
+                    //mHelper.NullPossibility();
             }
         } );
 
@@ -81,13 +109,12 @@ public class SearchFragment extends Fragment {
     }
 
 
-    public GsonProduct GetJson() {
-        task = new FetchProductsTask( getActivity(), keywords, newProduct, freeShipping, payment, min, max, currency );
+    public ArrayList<GsonProduct.item> GetJson() {
+        task = new FetchProductsTask(getActivity(), keywords, newProduct, usedProduct, freeShipping, payment, min, max, currency );
         try {
-            return task.execute().get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+            if(task!= null)
+                return (ArrayList<GsonProduct.item>) task.execute().get();
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
 

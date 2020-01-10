@@ -5,7 +5,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -19,7 +18,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FetchProductsTask extends AsyncTask<String, Void, GsonProduct> {
+public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.item>> {
 
     private final String LOG_TAG = "Dennis";
     private String keyword;
@@ -31,16 +30,17 @@ public class FetchProductsTask extends AsyncTask<String, Void, GsonProduct> {
     private String max;
     private String currency;
     private String jsonString;
-    Context context;
+    private Context context;
     ListView productsList;
     GsonProduct product;
-    private List<String> items = new ArrayList<>();
+    List<GsonProduct.item> itemList = new ArrayList<>(  );
+    private Integer size = 0;
 
 
-    public FetchProductsTask(Context context, String keywords, String newProduct, boolean freeShipping, boolean payment, String min, String max, String currency) {
+    public FetchProductsTask(Context context, String keywords, String newProduct, String usedProduct, boolean freeShipping, boolean payment, String min, String max, String currency) {
         keyword = keywords;
         this.context = context;
-        this.productsList = productsList;
+        //this.productsList = productsList;
         this.newProduct = newProduct;
         this.usedProduct = usedProduct;
         this.freeShipping = String.valueOf(freeShipping);
@@ -51,7 +51,7 @@ public class FetchProductsTask extends AsyncTask<String, Void, GsonProduct> {
     }
 
     @Override
-    protected GsonProduct doInBackground(String... strings) {
+    protected List<GsonProduct.item> doInBackground(String... strings) {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
 
@@ -68,8 +68,10 @@ public class FetchProductsTask extends AsyncTask<String, Void, GsonProduct> {
             String payload = "REST-PAYLOAD";
             String keywordsParam = "keywords";
             String pages = "paginationInput.entriesPerPage";
-            String filterName = "itemFilter.name";
-            String filterValue = "itemFilter.value";
+            //String filterName = "itemFilter.name";
+            //String filterValue = "itemFilter.value";
+            //String paramName = "itemFilter.paramName";
+            //String paramValue = "itemFilter.paramValue";
 
 
             Uri builtUri = Uri.parse(basicUrl).buildUpon()
@@ -79,14 +81,15 @@ public class FetchProductsTask extends AsyncTask<String, Void, GsonProduct> {
                     .appendQueryParameter(dataType, "JSON")
                     .appendQueryParameter(payload,"")
                     .appendQueryParameter(keywordsParam, keyword)
-                    .appendQueryParameter(filterName, "FreeShippingOnly")
-                    .appendQueryParameter(filterValue, freeShipping)
-                    .appendQueryParameter(filterName, "Condition")
-                    .appendQueryParameter(filterValue, newProduct)
-                    .appendQueryParameter(filterName, "MinPrice")
-                    .appendQueryParameter(filterValue, min)
-                    .appendQueryParameter(filterName, "MaxPrice")
-                    .appendQueryParameter(filterValue, max)
+                    .appendQueryParameter("itemFilter(0).name", "FreeShippingOnly")
+                    .appendQueryParameter("itemFilter(0).value", freeShipping)
+                    .appendQueryParameter("itemFilter(1).name","MinPrice")
+                    .appendQueryParameter("itemFilter(1).value", min)
+                    .appendQueryParameter("itemFilter(2).name","MaxPrice")
+                    .appendQueryParameter("itemFilter(2).value", max)
+                    .appendQueryParameter("itemFilter(3).name", "Condition")
+                    .appendQueryParameter("itemFilter(3).value(0)", newProduct)
+                    .appendQueryParameter( "itemFilter(3).value(1)", usedProduct)
                     .appendQueryParameter( pages, "20" )
                     .build();
 
@@ -140,13 +143,18 @@ public class FetchProductsTask extends AsyncTask<String, Void, GsonProduct> {
         }
 
 
-        int size = product.getFindItemsByKeywordsResponse().get(0).getSearchResult().get(0).getItem().size();
+        size = product.getFindItemsByKeywordsResponse().get(0).getSearchResult().get(0).getCount();
+        Log.v(LOG_TAG,String.valueOf(size));
         for(int i = 0; i <size;i++){
-            items.add( String.valueOf( product.getFindItemsByKeywordsResponse().get(0).getSearchResult().get(0).getItem().get(i).getShippingInfo().get(0).getShippingServiceCost().get(0).get__value__() ) );
+            itemList.add(product.getFindItemsByKeywordsResponse().get(0).getSearchResult().get(0).getItem().get(i));
         }
 
 
-        return product;
+        return itemList;
+    }
+
+    public int getSize(){
+        return size;
     }
 
     /*
