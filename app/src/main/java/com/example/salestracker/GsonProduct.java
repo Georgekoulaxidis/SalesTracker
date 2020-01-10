@@ -236,7 +236,10 @@ public class GsonProduct {
 
         public void setSellerInfo(List<Seller> sellerInfo) { this.sellerInfo = sellerInfo; }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
         /*
         public List<String> getListingInfo() {
             return listingInfo;
