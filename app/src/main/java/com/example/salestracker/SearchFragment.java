@@ -81,7 +81,7 @@ public class SearchFragment extends Fragment {
                     usedProduct = "Used";
                 }
 
-                Log.d( "Dennis", String.valueOf( newProduct ) );
+                Log.d( "Dennis", newProduct);
                 freeShipping = freeShippingBox.isChecked();
                 payment = paymentBox.isChecked();
                 min = minPlain.getText().toString();

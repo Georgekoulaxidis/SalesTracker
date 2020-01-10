@@ -82,7 +82,6 @@ public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.
                     .appendQueryParameter(dataType, "JSON")
                     .appendQueryParameter(payload,"")
                     .appendQueryParameter(keywordsParam, keyword)
-<<<<<<< HEAD
                     .appendQueryParameter("itemFilter(0).name", "FreeShippingOnly")
                     .appendQueryParameter("itemFilter(0).value", freeShipping)
                     .appendQueryParameter("itemFilter(1).name","MinPrice")
@@ -92,18 +91,7 @@ public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.
                     .appendQueryParameter("itemFilter(3).name", "Condition")
                     .appendQueryParameter("itemFilter(3).value(0)", newProduct)
                     .appendQueryParameter( "itemFilter(3).value(1)", usedProduct)
-=======
                     .appendQueryParameter(outputSelectorParam, "SellerInfo")
-                    .appendQueryParameter(filterName, "FreeShippingOnly")
-                    .appendQueryParameter(filterValue, freeShipping)
-                    .appendQueryParameter(filterName, "Condition")
-                    .appendQueryParameter(filterValue, newProduct)
-                    .appendQueryParameter(filterName, "MinPrice")
-                    .appendQueryParameter(filterValue, min)
-                    .appendQueryParameter(filterName, "MaxPrice")
-                    .appendQueryParameter(filterValue, max)
->>>>>>> master
-                    .appendQueryParameter( pages, "20" )
                     .build();
 
             URL url = new URL(builtUri.toString());
