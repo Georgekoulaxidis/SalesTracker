@@ -54,11 +54,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (menuItem.getItemId()){
             case R.id.nav_search:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new SearchFragment()).commit();
+                        new SearchFragment()).addToBackStack(null).commit();
                 break;
             case R.id.nav_favourites:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new FavouritesFragment()).commit();
+                        new FavouritesFragment()).addToBackStack(null).commit();
                 break;
         }
 
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ProductsFragment fragObj = new ProductsFragment();
         fragObj.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                fragObj).commit();
+                fragObj).addToBackStack(null).commit();
     }
 
 

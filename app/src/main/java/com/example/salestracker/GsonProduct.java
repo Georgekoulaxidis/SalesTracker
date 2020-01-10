@@ -110,7 +110,12 @@ public class GsonProduct {
         private List<String> location;
         private List<String> country;
         private List<shipping> shippingInfo;
+<<<<<<< HEAD
         private List<SellingStatus> sellingStatus;
+=======
+         private List<Status> sellingStatus;
+         private List<Seller> sellerInfo;
+>>>>>>> master
         //private List<String> listingInfo;
         private List<Boolean> returnsAccepted;
         //private List<String> condition;
@@ -222,6 +227,7 @@ public class GsonProduct {
         public void setShippingInfo(List<shipping> shippingInfo) {
             this.shippingInfo = shippingInfo;
         }
+<<<<<<< HEAD
 
         public List<SellingStatus> getSellingStatus() {
             return sellingStatus;
@@ -230,6 +236,17 @@ public class GsonProduct {
         public void setSellingStatus(List<SellingStatus> sellingStatus) {
             this.sellingStatus = sellingStatus;
         }
+=======
+
+        public List<Status> getSellingStatus() { return sellingStatus; }
+
+        public void setSellingStatus(List<Status> sellingStatus) { this.sellingStatus = sellingStatus; }
+
+        public List<Seller> getSellerInfo() { return sellerInfo; }
+
+        public void setSellerInfo(List<Seller> sellerInfo) { this.sellerInfo = sellerInfo; }
+
+>>>>>>> master
         /*
         public List<String> getListingInfo() {
             return listingInfo;
@@ -314,6 +331,24 @@ public class GsonProduct {
              this.__value__ = __value__;
          }
      }
+
+    public class Status {
+        private List<CurrentPrice> currentPrice;
+
+        public List<CurrentPrice> getProductsPrice() { return currentPrice; }
+    }
+
+    public class CurrentPrice {
+        private double __value__;
+
+        public double getPrice() { return __value__; }
+    }
+
+    public class Seller {
+        private List<String> sellerUserName;
+
+        public String getSellerUsername(int i) { return sellerUserName.get(i); }
+    }
 
     public class shipping{
         private List<shippingCost> shippingServiceCost;
