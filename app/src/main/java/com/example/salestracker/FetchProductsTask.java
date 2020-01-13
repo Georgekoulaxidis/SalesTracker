@@ -92,10 +92,7 @@ public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.
                     .appendQueryParameter("itemFilter(3).value(0)", newProduct)
                     .appendQueryParameter( "itemFilter(3).value(1)", usedProduct)
                     .appendQueryParameter(outputSelectorParam, "SellerInfo")
-<<<<<<< HEAD
-=======
                     .appendQueryParameter( pages, "20" )
->>>>>>> master
                     .build();
 
             URL url = new URL(builtUri.toString());

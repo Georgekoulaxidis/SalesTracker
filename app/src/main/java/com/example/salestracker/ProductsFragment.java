@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -46,6 +47,12 @@ public class ProductsFragment extends Fragment {
             listProducts = view.findViewById( R.id.productsList );
             ConnectAdapter myAdapter = new ConnectAdapter( mActivityRef.get(), R.layout.custom_row, itemList );
             listProducts.setAdapter( myAdapter );
+            listProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    new PopupClass().showPopup(itemList, view, position);
+                }
+            });
         }else{
             TextView titleResult = view.findViewById( R.id.titleResult);
             titleResult.setText("We didn't find any product");
