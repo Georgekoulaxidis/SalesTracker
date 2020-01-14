@@ -74,8 +74,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
-    public boolean checkUser(String email, String password) {
-        String[] columns = {COLUMN_USER_ID};
+    public User checkUser(String email, String password) {
+        String[] columns = {COLUMN_USER_ID, COLUMN_USER_EMAIL, COLUMN_USER_PASSWORD, COLUMN_USER_NAME};
         SQLiteDatabase db = this.getReadableDatabase();
         String selection = COLUMN_USER_EMAIL + " = ?" + " AND " + COLUMN_USER_PASSWORD + " = ?";
         String[] selectionArgs = {email, password};
@@ -88,13 +88,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 null,                       //filter by row groups
                 null);                      //The sort order
         int cursorCount = cursor.getCount();
-        cursor.close();
         db.close();
 
         if (cursorCount > 0) {
-            return true;
+            User user = new User();
+            if(cursor.moveToNext()) {
+                user.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_USER_ID)));
+                user.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_USER_EMAIL)));
+                user.setPassword(cursor.getString(cursor.getColumnIndex(COLUMN_USER_PASSWORD)));
+                user.setName(cursor.getString(cursor.getColumnIndex(COLUMN_USER_NAME)));
+            }
+
+            cursor.close();
+            return user;
         }
-        return false;
+        return null;
     }
 
     public boolean addUser(User user) {

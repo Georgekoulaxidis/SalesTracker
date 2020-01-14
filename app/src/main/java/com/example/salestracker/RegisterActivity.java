@@ -87,6 +87,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                         intent.putExtra("user", user);
                         startActivity(intent);
+                        finish();
                     }
                 }
                 final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
