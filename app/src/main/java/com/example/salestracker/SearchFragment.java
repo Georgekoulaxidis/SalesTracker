@@ -10,10 +10,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.NonNull;
@@ -38,7 +35,7 @@ public class SearchFragment extends Fragment {
     private boolean payment = false;
     private String min = new String();
     private String max = new String();
-    private String currency = new String();
+    private String country = new String();
 
     private FetchProductsTask task;
     private ArrayList<GsonProduct.item> item = new ArrayList<>();
@@ -56,7 +53,7 @@ public class SearchFragment extends Fragment {
         usedBox = view.findViewById( R.id.usedBox );
         freeShippingBox = view.findViewById( R.id.freeShippingBox );
         paymentBox = view.findViewById( R.id.paymentBox );
-        currencySpinner = view.findViewById( R.id.currenciesSpinner );
+        currencySpinner = view.findViewById( R.id.countrySpinner );
         minPlain = view.findViewById( R.id.minPlain );
         maxPlain = view.findViewById( R.id.maxPlain );
 
@@ -90,7 +87,13 @@ public class SearchFragment extends Fragment {
                 max = maxPlain.getText().toString();
                 if(max.isEmpty())
                     max = "999999999999999.0";
-                currency = (String) currencySpinner.getSelectedItem();
+                 if(currencySpinner.getSelectedItem().equals("USA")){
+                     country = "EBAY-US";
+                 }
+                 else if(currencySpinner.getSelectedItem().equals("DEU"))
+                    country = "EBAY-DE";
+                 else if(currencySpinner.getSelectedItem().equals("UK"))
+                     country = "EBAY-GB";
 
                 MainActivity mHelper = (MainActivity) getActivity();
                 //Intent intent = new Intent(getActivity().getBaseContext(), MainActivity.class);
@@ -110,7 +113,7 @@ public class SearchFragment extends Fragment {
 
 
     public ArrayList<GsonProduct.item> GetJson() {
-        task = new FetchProductsTask(getActivity(), keywords, newProduct, usedProduct, freeShipping, payment, min, max, currency );
+        task = new FetchProductsTask(getActivity(), keywords, newProduct, usedProduct, freeShipping, payment, min, max, country);
         try {
             if(task!= null)
                 return (ArrayList<GsonProduct.item>) task.execute().get();

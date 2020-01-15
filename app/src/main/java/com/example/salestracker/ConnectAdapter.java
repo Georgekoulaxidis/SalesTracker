@@ -13,10 +13,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
 import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
