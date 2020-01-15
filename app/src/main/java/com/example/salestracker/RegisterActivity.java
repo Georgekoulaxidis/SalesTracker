@@ -1,9 +1,11 @@
 package com.example.salestracker;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -85,8 +87,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                         intent.putExtra("user", user);
                         startActivity(intent);
+                        finish();
                     }
                 }
+                final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getRootView().getWindowToken(), 0);
                 break;
 
             case R.id.linkLoginTextView:

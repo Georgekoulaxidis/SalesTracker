@@ -1,6 +1,7 @@
 package com.example.salestracker;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -36,6 +37,7 @@ public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.
     List<GsonProduct.item> itemList = new ArrayList<>(  );
     private Integer size = 0;
 
+    private ProgressDialog progressDialog;
 
     public FetchProductsTask(Context context, String keywords, String newProduct, String usedProduct, boolean freeShipping, boolean payment, String min, String max, String country) {
         keyword = keywords;
@@ -48,6 +50,14 @@ public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.
         this.min = min;
         this.max = max;
         this.country = country;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        progressDialog.setTitle("Please wait.. The data you asked are being fetched..");
+        progressDialog.setMessage("The data you asked are being fetched..");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
     }
 
     @Override
@@ -160,14 +170,8 @@ public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.
         return size;
     }
 
-    /*
     @Override
-    protected void onPostExecute(GsonProduct p) {
-        if(p != null) {
-            ArrayAdapter<String> products = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, items);
-            productsList.setAdapter(products);
-            
-        }
-
-    }*/
+    protected void onPostExecute(List<GsonProduct.item> items) {
+        progressDialog.dismiss();
+    }
 }

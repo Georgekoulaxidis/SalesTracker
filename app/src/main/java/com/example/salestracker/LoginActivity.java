@@ -1,9 +1,12 @@
 package com.example.salestracker;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,6 +31,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private InputValidator validator;
     private User user;
 
+    public static final String myPreferences = "loginPrefs";
+    public static final String loggedIn = "loggedIn";
+    public static final String Email = "email";
+    public static final String Password = "password";
+    private SharedPreferences sp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +52,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         registerTextView = findViewById(R.id.linkRegisterTextView);
         registerTextView.setOnClickListener(this);
 
+        dbHelper = new DatabaseHelper(LoginActivity.this);
+        validator = new InputValidator(LoginActivity.this);
 
+        sp = getSharedPreferences(myPreferences, Context.MODE_PRIVATE);
+        if(sp.getBoolean(loggedIn, false)) {
+            goToMainActivity(dbHelper
+                    .checkUser(sp.getString(Email, null), sp.getString(Password, null)));
+        }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
     }
 
     @Override
@@ -52,9 +76,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch(v.getId()) {
             case R.id.loginBtn:
                 Log.d("dennis", "Login button clicked");
-                dbHelper = new DatabaseHelper(LoginActivity.this);
-                validator = new InputValidator(LoginActivity.this);
-                user = new User();
 
                 if(validator.isInputEditTextFilled(textInputEditTextEmail, textInputLayoutEmail, "Entering email is mandatory") &&
                         validator.isInputEditTextFilled(textInputEditTextPassword, textInputLayoutPassword, "Entering password is mandatory") &&
@@ -62,11 +83,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     String email = textInputEditTextEmail.getText().toString();
                     String password = textInputEditTextPassword.getText().toString();
-                    if(dbHelper.checkUser(email, password)) {
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    if(dbHelper.checkUser(email, password) != null) {
                         emptyInputEditText();
-                        intent.putExtra("user", user);
-                        startActivity(intent);
+
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putBoolean(loggedIn, true);
+                        editor.putString(Email, email);
+                        editor.putString(Password, password);
+                        editor.commit();
+
+                        goToMainActivity(dbHelper.checkUser(email, password));
                     }
                     else {
                         Log.d("dennis", "Login failed");
@@ -81,6 +107,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         startActivity(intent);
                     }*/
                 }
+                final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getRootView().getWindowToken(), 0);
                 break;
             case R.id.linkRegisterTextView:
                 // Navigate to RegisterActivity
@@ -93,5 +121,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void emptyInputEditText() {
         textInputEditTextEmail.setText(null);
         textInputEditTextPassword.setText(null);
+    }
+
+    private void goToMainActivity(User user) {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
+        finish();
     }
 }

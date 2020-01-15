@@ -1,10 +1,12 @@
 package com.example.salestracker;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -100,6 +102,8 @@ public class SearchFragment extends Fragment {
                 //intent.putExtra("item", GetJson());
 
                 item = GetJson();
+                final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
                 //if(item.size() != 0)
                 mHelper.ReceiveJson( item );
                 //else
