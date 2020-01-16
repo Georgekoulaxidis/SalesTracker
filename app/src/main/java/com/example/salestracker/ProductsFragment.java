@@ -89,6 +89,9 @@ public class ProductsFragment extends Fragment {
         fp.setProductPrice(itemList.get(info.position).getSellingStatus().get(0).getPriceDetails().get(0).get__value__());
         fp.setProductUrl(itemList.get(info.position).getGalleryURL(0));
         fp.setCondition(itemList.get(info.position).getCondition().get(0).getConditionDisplayName(0));
+        fp.setMinPrice(SearchFragment.min);
+        fp.setMaxPrice(SearchFragment.max);
+        fp.setSearchKeyword(SearchFragment.keywords);
         fp.setFreeShipping(itemList.get(info.position).getShippingInfo().get(0).getShippingType(0).equals("Free"));
 
         switch(item.getItemId()) {

@@ -39,6 +39,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_EBAY_STORE = "ebay_store";
     private static final String COLUMN_PRODUCT_MINPRICE = "product_minprice";
     private static final String COLUMN_PRODUCT_MAXPRICE = "product_maxprice";
+    private static final String COLUMN_PRODUCT_SEARCHKEYWORD = "search_keyword";
     private static final String COLUMN_FREE_SHIPPING = "free_shipping";
 
     // create table sql query
@@ -50,8 +51,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_USR_ID + " INTEGER," + COLUMN_PRODUCT_ID + " TEXT,"
             + COLUMN_PRODUCT_TITLE + " TEXT," + COLUMN_PRODUCT_PRICE + " DOUBLE," + COLUMN_PRODUCT_SELLER + " TEXT,"
             + COLUMN_PRODUCT_URL + " TEXT," + COLUMN_PRODUCT_CONDITION + " TEXT," + COLUMN_EBAY_STORE + " TEXT,"
-            + COLUMN_PRODUCT_MINPRICE + " TEXT," + COLUMN_PRODUCT_MAXPRICE + " TEXT," + COLUMN_FREE_SHIPPING + " BOOLEAN,"
-            + "PRIMARY KEY(" + COLUMN_USR_ID + ", " + COLUMN_PRODUCT_ID + "), FOREIGN KEY(" + COLUMN_USR_ID + ") REFERENCES "
+            + COLUMN_PRODUCT_MINPRICE + " TEXT," + COLUMN_PRODUCT_MAXPRICE + " TEXT," + COLUMN_PRODUCT_SEARCHKEYWORD + " TEXT,"
+            + COLUMN_FREE_SHIPPING + " BOOLEAN," + "PRIMARY KEY(" + COLUMN_USR_ID + ", "
+            + COLUMN_PRODUCT_ID + "), FOREIGN KEY(" + COLUMN_USR_ID + ") REFERENCES "
             + TABLE_USER + "(" + COLUMN_USER_ID + "))";
 
     // drop table sql query
@@ -165,8 +167,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_PRODUCT_SELLER, fp.getProductSeller());
         values.put(COLUMN_PRODUCT_CONDITION, fp.getCondition());
         values.put(COLUMN_PRODUCT_URL, fp.getProductUrl());
-        //values.put(COLUMN_PRODUCT_MINPRICE, fp.getMinPrice());
-        //values.put(COLUMN_PRODUCT_MAXPRICE, fp.getMaxPrice());
+        values.put(COLUMN_PRODUCT_MINPRICE, fp.getMinPrice());
+        values.put(COLUMN_PRODUCT_MAXPRICE, fp.getMaxPrice());
+        values.put(COLUMN_PRODUCT_SEARCHKEYWORD, fp.getSearchKeyword());
         values.put(COLUMN_EBAY_STORE, fp.geteBayStore());
         values.put(COLUMN_FREE_SHIPPING, fp.getFreeShipping());
 
@@ -185,7 +188,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<FavsProduct> getFavs(int userId) {
         String[] columns = {COLUMN_PRODUCT_ID, COLUMN_PRODUCT_TITLE, COLUMN_PRODUCT_PRICE, COLUMN_PRODUCT_SELLER,
                 COLUMN_PRODUCT_URL, COLUMN_PRODUCT_CONDITION, COLUMN_EBAY_STORE, COLUMN_PRODUCT_MINPRICE,
-                COLUMN_PRODUCT_MAXPRICE, COLUMN_FREE_SHIPPING};
+                COLUMN_PRODUCT_MAXPRICE, COLUMN_PRODUCT_SEARCHKEYWORD, COLUMN_FREE_SHIPPING};
         SQLiteDatabase db = this.getReadableDatabase();
         String selection = COLUMN_USR_ID + " = ?";
         String[] selectionArgs = {String.valueOf(userId)};
@@ -211,8 +214,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 fp.setProductSeller(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_SELLER)));
                 fp.setProductUrl(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_URL)));
                 fp.setCondition(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_CONDITION)));
-                //fp.setMinPrice(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_MINPRICE)));
-                //fp.setMaxPrice(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_MAXPRICE)));
+                fp.setMinPrice(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_MINPRICE)));
+                fp.setMaxPrice(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_MAXPRICE)));
+                fp.setSearchKeyword(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_SEARCHKEYWORD)));
                 fp.seteBayStore(cursor.getString(cursor.getColumnIndex(COLUMN_EBAY_STORE)));
                 fp.setFreeShipping(cursor.getInt(cursor.getColumnIndex(COLUMN_FREE_SHIPPING)) > 0);
 

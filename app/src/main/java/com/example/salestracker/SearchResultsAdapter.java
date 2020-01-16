@@ -86,6 +86,9 @@ public class SearchResultsAdapter extends ArrayAdapter<GsonProduct.item> {
                             currentProduct.getGalleryURL(0),
                             currentProduct.getCondition().get(0).getConditionDisplayName(0),
                             currentProduct.getGlobalId().get(0),
+                            SearchFragment.min,
+                            SearchFragment.max,
+                            SearchFragment.keywords,
                             (currentProduct.getShippingInfo().get(0).getShippingType(0)).equals("Free"));
 
                     MainActivity.favourites.add(tempFav);
@@ -95,7 +98,7 @@ public class SearchResultsAdapter extends ArrayAdapter<GsonProduct.item> {
                 }
                 else {
                     for(FavsProduct fp: MainActivity.favourites) {
-                        if (fp.getProductId().equals(currentProduct.getItemId())) {
+                        if (fp.getProductId().equals(currentProduct.getItemId().get(0))) {
                             tempFav = fp;
                         }
                     }

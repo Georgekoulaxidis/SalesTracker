@@ -12,14 +12,14 @@ public class FavsProduct {
     private String productUrl;
     private String condition;
     private String eBayStore;   //US, Germany, UK, Australia
-    //private String minPrice;
-    //private String maxPrice;
+    private String minPrice;
+    private String maxPrice;
+    private String searchKeyword;
     private boolean freeShipping;   //true or false based on the checkbox on search fragment
-    //private List<String> paymentMethods;    //ΤΙ ΘΑ ΜΠΕΙ ΕΔΩ
 
     public FavsProduct(int userId, String productId, String productTitle, double productPrice,
                        String productSeller, String productUrl, String condition, String eBayStore,
-                       /*String minPrice, String maxPrice, */boolean freeShipping/*, List<String> paymentMethods*/) {
+                       String minPrice, String maxPrice, String searchKeyword, boolean freeShipping) {
         this.userId = userId;
         this.productId = productId;
         this.productTitle = productTitle;
@@ -30,8 +30,8 @@ public class FavsProduct {
         this.eBayStore = eBayStore;
         //this.minPrice = minPrice;
         //this.maxPrice = maxPrice;
+        //this.searchKeyword = searchKeyword;
         this.freeShipping = freeShipping;
-        //this.paymentMethods = paymentMethods;
     }
 
     public FavsProduct() {
@@ -54,13 +54,13 @@ public class FavsProduct {
 
     public String geteBayStore() { return eBayStore; }
 
-    //public String getMinPrice() { return minPrice; }
+    public String getMinPrice() { return minPrice; }
 
-    //public String getMaxPrice() { return maxPrice; }
+    public String getMaxPrice() { return maxPrice; }
+
+    public String getSearchKeyword() { return searchKeyword; }
 
     public boolean getFreeShipping() { return freeShipping; }
-
-    //public List<String> getPaymentMethods() { return paymentMethods; }
 
 
     public void setUserId(int userId) { this.userId = userId; }
@@ -79,9 +79,11 @@ public class FavsProduct {
 
     public void seteBayStore(String eBayStore) { this.eBayStore = eBayStore; }
 
-    //public void setMinPrice(String minPrice) { this.minPrice = minPrice; }
+    public void setMinPrice(String minPrice) { this.minPrice = minPrice; }
 
-    //public void setMaxPrice(String maxPrice) { this.maxPrice = maxPrice; }
+    public void setMaxPrice(String maxPrice) { this.maxPrice = maxPrice; }
+
+    public void setSearchKeyword(String searchKeyword) {this.searchKeyword = searchKeyword; }
 
     public void setFreeShipping(boolean freeShipping) { this.freeShipping = freeShipping; }
 

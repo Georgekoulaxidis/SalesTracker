@@ -30,14 +30,15 @@ public class SearchFragment extends Fragment {
     private Spinner currencySpinner;
     private EditText minPlain;
     private EditText maxPlain;
-    private String keywords = new String();
     private String newProduct;
     private String usedProduct;
     private boolean freeShipping = false;
     private boolean payment = false;
-    private String min = new String();
-    private String max = new String();
     private String country = new String();
+
+    public static String keywords = new String();
+    public static String min = new String();
+    public static String max = new String();
 
     private FetchProductsTask task;
     private ArrayList<GsonProduct.item> item = new ArrayList<>();
