@@ -236,6 +236,7 @@ public class GsonProduct {
 
         public void setSellerInfo(List<Seller> sellerInfo) { this.sellerInfo = sellerInfo; }
 
+
         /*
         public List<String> getListingInfo() {
             return listingInfo;

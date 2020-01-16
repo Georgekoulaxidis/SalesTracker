@@ -29,7 +29,7 @@ public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.
     private String payment;
     private String min;
     private String max;
-    private String currency;
+    private String country;
     private String jsonString;
     private Context context;
     ListView productsList;
@@ -39,8 +39,7 @@ public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.
 
     private ProgressDialog progressDialog;
 
-
-    public FetchProductsTask(Context context, String keywords, String newProduct, String usedProduct, boolean freeShipping, boolean payment, String min, String max, String currency) {
+    public FetchProductsTask(Context context, String keywords, String newProduct, String usedProduct, boolean freeShipping, boolean payment, String min, String max, String country) {
         keyword = keywords;
         this.context = context;
         //this.productsList = productsList;
@@ -50,9 +49,7 @@ public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.
         this.payment = String.valueOf(payment);
         this.min = min;
         this.max = max;
-        this.currency = currency;
-
-        progressDialog = new ProgressDialog(context);
+        this.country = country;
     }
 
     @Override
@@ -93,6 +90,7 @@ public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.
                     .appendQueryParameter(version, "1.0.0")
                     .appendQueryParameter(appid, "Dionisis-SmartSho-PRD-0388a6d5f-56b83621")
                     .appendQueryParameter(dataType, "JSON")
+                    .appendQueryParameter("GLOBAL-ID", country)
                     .appendQueryParameter(payload,"")
                     .appendQueryParameter(keywordsParam, keyword)
                     .appendQueryParameter("itemFilter(0).name", "FreeShippingOnly")

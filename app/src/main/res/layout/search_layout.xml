@@ -16,7 +16,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currenciesSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/countrySpinner" />
 
     <Button
         android:id="@+id/searchBtn"
@@ -71,7 +71,7 @@
         app:layout_constraintTop_toBottomOf="@+id/freeShippingBox" />
 
     <Spinner
-        android:id="@+id/currenciesSpinner"
+        android:id="@+id/countrySpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -89,7 +89,7 @@
         android:hint="Min"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currenciesSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/countrySpinner" />
 
     <EditText
         android:id="@+id/maxPlain"
@@ -100,6 +100,6 @@
         android:hint="Max"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currenciesSpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/countrySpinner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

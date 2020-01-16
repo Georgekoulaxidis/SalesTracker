@@ -13,9 +13,9 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string-array name="curruncies">
-        <item>$</item>
-        <item>"\u20ac"</item>
-        <item>"\u00a3"</item>
+    <string-array name="Countries">
+        <item>USA</item>
+        <item>DEU</item>
+        <item>UK</item>
     </string-array>
 </resources>
