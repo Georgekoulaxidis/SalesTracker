@@ -50,6 +50,8 @@ public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.
         this.min = min;
         this.max = max;
         this.country = country;
+
+        progressDialog = new ProgressDialog(context);
     }
 
     @Override
