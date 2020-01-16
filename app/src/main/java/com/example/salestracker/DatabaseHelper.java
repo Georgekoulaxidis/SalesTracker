@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Database Version
@@ -17,20 +20,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // User table name
     private static final String TABLE_USER = "User";
+    // Favourites table name
+    private static final String TABLE_FAVS = "Favourites";
 
     // User Table Columns names
     private static final String COLUMN_USER_ID = "user_id";
     private static final String COLUMN_USER_NAME = "user_name";
     private static final String COLUMN_USER_EMAIL = "user_email";
     private static final String COLUMN_USER_PASSWORD = "user_password";
+    // Favourites Table Columns names
+    private static final String COLUMN_USR_ID = "user_id";
+    private static final String COLUMN_PRODUCT_ID = "product_id";
+    private static final String COLUMN_PRODUCT_TITLE = "product_title";
+    private static final String COLUMN_PRODUCT_PRICE = "product_price";
+    private static final String COLUMN_PRODUCT_SELLER = "product_seller";
+    private static final String COLUMN_PRODUCT_URL = "product_url";
+    private static final String COLUMN_PRODUCT_CONDITION = "product_condition";
+    private static final String COLUMN_EBAY_STORE = "ebay_store";
+    private static final String COLUMN_PRODUCT_MINPRICE = "product_minprice";
+    private static final String COLUMN_PRODUCT_MAXPRICE = "product_maxprice";
+    private static final String COLUMN_FREE_SHIPPING = "free_shipping";
 
     // create table sql query
     private String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USER + "("
             + COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_USER_NAME + " TEXT,"
             + COLUMN_USER_EMAIL + " TEXT," + COLUMN_USER_PASSWORD + " TEXT" + ")";
+    // create table favourites sql query
+    private String CREATE_FAVS_TABLE = "CREATE TABLE " + TABLE_FAVS + "("
+            + COLUMN_USR_ID + " INTEGER," + COLUMN_PRODUCT_ID + " TEXT,"
+            + COLUMN_PRODUCT_TITLE + " TEXT," + COLUMN_PRODUCT_PRICE + " DOUBLE," + COLUMN_PRODUCT_SELLER + " TEXT,"
+            + COLUMN_PRODUCT_URL + " TEXT," + COLUMN_PRODUCT_CONDITION + " TEXT," + COLUMN_EBAY_STORE + " TEXT,"
+            + COLUMN_PRODUCT_MINPRICE + " TEXT," + COLUMN_PRODUCT_MAXPRICE + " TEXT," + COLUMN_FREE_SHIPPING + " BOOLEAN,"
+            + "PRIMARY KEY(" + COLUMN_USR_ID + ", " + COLUMN_PRODUCT_ID + "), FOREIGN KEY(" + COLUMN_USR_ID + ") REFERENCES "
+            + TABLE_USER + "(" + COLUMN_USER_ID + "))";
 
     // drop table sql query
     private String DROP_USER_TABLE = "DROP TABLE IF EXISTS " + TABLE_USER;
+    // drop table favourites sql query
+    private String DROP_FAVS_TABLE = "DROP TABLE IF EXISTS " + TABLE_FAVS;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -39,11 +66,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_USER_TABLE);
+        db.execSQL(CREATE_FAVS_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(DROP_USER_TABLE);
+        db.execSQL(DROP_FAVS_TABLE);
         onCreate(db);
     }
 
@@ -118,6 +147,89 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
 
         Log.d("dennis","User added!");
+
+        if(success != -1) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean addProductToFavs(FavsProduct fp) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USR_ID, fp.getUserId());
+        values.put(COLUMN_PRODUCT_ID, fp.getProductId());
+        values.put(COLUMN_PRODUCT_TITLE, fp.getProductTitle());
+        values.put(COLUMN_PRODUCT_PRICE, fp.getProductPrice());
+        values.put(COLUMN_PRODUCT_SELLER, fp.getProductSeller());
+        values.put(COLUMN_PRODUCT_CONDITION, fp.getCondition());
+        values.put(COLUMN_PRODUCT_URL, fp.getProductUrl());
+        //values.put(COLUMN_PRODUCT_MINPRICE, fp.getMinPrice());
+        //values.put(COLUMN_PRODUCT_MAXPRICE, fp.getMaxPrice());
+        values.put(COLUMN_EBAY_STORE, fp.geteBayStore());
+        values.put(COLUMN_FREE_SHIPPING, fp.getFreeShipping());
+
+        // Inserting Row
+        long success = db.insert(TABLE_FAVS, null, values);
+        db.close();
+
+        Log.d("dennis","Favourite Product added!");
+
+        if(success != -1) {
+            return true;
+        }
+        return false;
+    }
+
+    public List<FavsProduct> getFavs(int userId) {
+        String[] columns = {COLUMN_PRODUCT_ID, COLUMN_PRODUCT_TITLE, COLUMN_PRODUCT_PRICE, COLUMN_PRODUCT_SELLER,
+                COLUMN_PRODUCT_URL, COLUMN_PRODUCT_CONDITION, COLUMN_EBAY_STORE, COLUMN_PRODUCT_MINPRICE,
+                COLUMN_PRODUCT_MAXPRICE, COLUMN_FREE_SHIPPING};
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selection = COLUMN_USR_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(userId)};
+
+        Cursor cursor = db.query(TABLE_FAVS, //Table to query
+                columns,                    //columns to return
+                selection,                  //columns for the WHERE clause
+                selectionArgs,              //The values for the WHERE clause
+                null,                       //group the rows
+                null,                       //filter by row groups
+                null);                      //The sort order
+        int cursorCount = cursor.getCount();
+        db.close();
+
+        if (cursorCount > 0) {
+            ArrayList<FavsProduct> favs = new ArrayList<FavsProduct>();
+            while(cursor.moveToNext()) {
+                FavsProduct fp = new FavsProduct();
+                fp.setUserId(userId);
+                fp.setProductId(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_ID)));
+                fp.setProductTitle(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_TITLE)));
+                fp.setProductPrice(cursor.getDouble(cursor.getColumnIndex(COLUMN_PRODUCT_PRICE)));
+                fp.setProductSeller(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_SELLER)));
+                fp.setProductUrl(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_URL)));
+                fp.setCondition(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_CONDITION)));
+                //fp.setMinPrice(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_MINPRICE)));
+                //fp.setMaxPrice(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_MAXPRICE)));
+                fp.seteBayStore(cursor.getString(cursor.getColumnIndex(COLUMN_EBAY_STORE)));
+                fp.setFreeShipping(cursor.getInt(cursor.getColumnIndex(COLUMN_FREE_SHIPPING)) > 0);
+
+                favs.add(fp);
+            }
+            cursor.close();
+            return favs;
+        }
+        return new ArrayList<FavsProduct>();
+    }
+
+    public boolean deleteProductFromFavs(FavsProduct fp) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // delete user record by id
+        long success = db.delete(TABLE_FAVS, COLUMN_USR_ID + " = ?" + " AND " + COLUMN_PRODUCT_ID + " = ?",
+                new String[]{String.valueOf(fp.getUserId()), fp.getProductId()});
+        db.close();
 
         if(success != -1) {
             return true;

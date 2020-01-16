@@ -17,15 +17,24 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
 
+    private DatabaseHelper dbHelper;
+    public static User loggedInUser;
+    public static List<FavsProduct> favourites;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_toolbar);
+
+        loggedInUser = ((User)getIntent().getSerializableExtra("user"));
+        dbHelper = new DatabaseHelper(MainActivity.this);
+        favourites = dbHelper.getFavs(loggedInUser.getId());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

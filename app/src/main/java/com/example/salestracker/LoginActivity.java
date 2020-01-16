@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        rootLayout = findViewById(R.id.rootLayout);
+        rootLayout = findViewById(R.id.loginRootLayout);
         textInputLayoutEmail = findViewById(R.id.txtInputLayoutEmail);
         textInputLayoutPassword = findViewById(R.id.txtInputLayoutPassword);
         textInputEditTextEmail = findViewById(R.id.txtInputEditTextEmail);

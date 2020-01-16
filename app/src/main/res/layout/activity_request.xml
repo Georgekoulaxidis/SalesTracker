@@ -15,8 +15,13 @@
             android:id="@+id/titleResult"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="serif"
+            android:gravity="center_vertical|center_horizontal"
             android:text="Products Result"
-            android:gravity="center_vertical|center_horizontal"/>
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="18sp" />
 
         <ListView
             android:id="@+id/productsList"

@@ -109,12 +109,12 @@ public class GsonProduct {
         private List<String> postalCode;
         private List<String> location;
         private List<String> country;
-        private List<shipping> shippingInfo;
+        private List<Shipping> shippingInfo;
         private List<SellingStatus> sellingStatus;
         private List<Seller> sellerInfo;
         //private List<String> listingInfo;
         private List<Boolean> returnsAccepted;
-        //private List<String> condition;
+        private List<ConditionDetails> condition;
         private List<Boolean> isMultiVariationListing;
         private List<Boolean> topRatedListing;
 
@@ -216,11 +216,11 @@ public class GsonProduct {
             this.country = country;
         }
 
-        public List<shipping> getShippingInfo() {
+        public List<Shipping> getShippingInfo() {
             return shippingInfo;
         }
 
-        public void setShippingInfo(List<shipping> shippingInfo) {
+        public void setShippingInfo(List<Shipping> shippingInfo) {
             this.shippingInfo = shippingInfo;
         }
 
@@ -251,15 +251,15 @@ public class GsonProduct {
 
         public void setReturnsAccepted(List<Boolean> returnsAccepted) {
             this.returnsAccepted = returnsAccepted;
-        }
+        }*/
 
-        public List<String> getCondition() {
+        public List<ConditionDetails> getCondition() {
             return condition;
         }
 
-        public void setCondition(List<String> condition) {
+        public void setCondition(List<ConditionDetails> condition) {
             this.condition = condition;
-        }*/
+        }
 
         public List<Boolean> getIsMultiVariationListing() {
             return isMultiVariationListing;
@@ -286,6 +286,12 @@ public class GsonProduct {
          public void writeToParcel(Parcel parcel, int i) {
 
          }
+     }
+
+     public class ConditionDetails {
+        private List<String> conditionDisplayName;
+
+        public String getConditionDisplayName(int i) { return conditionDisplayName.get(i); }
      }
 
      public class SellingStatus{
@@ -329,12 +335,15 @@ public class GsonProduct {
         public String getSellerUsername(int i) { return sellerUserName.get(i); }
     }
 
-    public class shipping{
+    public class Shipping{
         private List<shippingCost> shippingServiceCost;
+        private List<String> shippingType;
 
         public List<shippingCost> getShippingServiceCost() {
             return shippingServiceCost;
         }
+
+        public String getShippingType(int i) { return shippingType.get(0); }
 
         public void setShippingServiceCost(List<shippingCost> shippingServiceCost) {
             this.shippingServiceCost = shippingServiceCost;
