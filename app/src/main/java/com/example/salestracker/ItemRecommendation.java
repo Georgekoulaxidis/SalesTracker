@@ -102,7 +102,7 @@ public class ItemRecommendation {
     public class PriceDetails{
         @SerializedName("@currencyId")
         private String currency;
-        private String __value__;
+        private double __value__;
 
         public String getCurrency() {
             return currency;
@@ -112,11 +112,11 @@ public class ItemRecommendation {
             this.currency = currency;
         }
 
-        public String get__value__() {
+        public double get__value__() {
             return __value__;
         }
 
-        public void set__value__(String __value__) {
+        public void set__value__(double __value__) {
             this.__value__ = __value__;
         }
     }
