@@ -80,8 +80,9 @@ public class FetchProductsService extends JobService {
                         }
                         else
                             Log.v("Dennis", "List with similar products is empty");
-                        action = 0;
+
                     }
+                    action = 0;
 
 
                 }
