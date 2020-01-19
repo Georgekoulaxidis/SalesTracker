@@ -38,7 +38,7 @@ public class FetchProductsService extends JobService {
     private SingleProduct product;
     private ItemRecommendation recProduct;
     private String jsonString;
-    private String code;
+    private String code = "153793880117";
     private String siteId;
     private int action = 0;
 
@@ -72,8 +72,14 @@ public class FetchProductsService extends JobService {
                     action = 1;
                     CheckAvaialability(code);
                     if(recProduct.getGetSimilarItemsResponse().get(0).getAck().equals("Success")) {
-                        if(recProduct.getGetSimilarItemsResponse().get(0).getItemRecommendation().size() != 0)
-                            BuildNotification( MainActivity.getContext(), "Similar Product", "There's a new product similar to the one that you have in your list" );
+                        if(recProduct.getGetSimilarItemsResponse().get(0).getItemRecommendation().size() != 0) {
+                            if(recProduct.getGetSimilarItemsResponse().get(0).getItemRecommendation().get(0).getItem().get(0).getCurrentPrice().get(0).get__value__() <= currentPrice)
+                                BuildNotification( MainActivity.getContext(), "Similar Product", "There's a new product similar to the one that you have in your list" );
+                            else
+                                Log.v("Dennis", "There is not a cheaper similar product");
+                        }
+                        else
+                            Log.v("Dennis", "List with similar products is empty");
                         action = 0;
                     }
 
