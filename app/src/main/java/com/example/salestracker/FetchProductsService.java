@@ -24,20 +24,19 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import static com.example.salestracker.NotificationChan.CHANNEL_1_ID;
-import static java.security.AccessController.getContext;
-
 
 public class FetchProductsService extends JobService {
 
     private final String LOG_TAG = "Dennis";
     private String keyword;
-    private String title;
-    private double currentPrice;
+    private String title = "Apple iPhone 5c - 16GB - Blue (Unlocked) A1507 (GSM)";
+    private double currentPrice = 24.37;
     private String payment;
     private String freeShipping;
-    private int min;
+    private int min = 0;
     private int max;
     private SingleProduct product;
+    private ItemRecommendation recProduct;
     private String jsonString;
     private String code;
     private String siteId;
@@ -48,7 +47,7 @@ public class FetchProductsService extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         Log.d("BootReceiver", "Job started");
-        //doBackgroundWork(params, this);
+        doBackgroundWork(params, this);
         //FetchProductsTask task = new FetchProductsTask("aKeyword", null);
         //task.execute();
 
@@ -72,8 +71,13 @@ public class FetchProductsService extends JobService {
                 else{
                     action = 1;
                     CheckAvaialability(code);
-                    action = 0;
-                    
+                    if(recProduct.getGetSimilarItemsResponse().get(0).getAck().equals("Success")) {
+                        if(recProduct.getGetSimilarItemsResponse().get(0).getItemRecommendation().size() != 0)
+                            BuildNotification( MainActivity.getContext(), "Similar Product", "There's a new product similar to the one that you have in your list" );
+                        action = 0;
+                    }
+
+
                 }
 
                 //BuildNotification(getContext(),"You have failed Anakin", "I have the high ground");
@@ -169,7 +173,14 @@ public class FetchProductsService extends JobService {
             jsonString = buffer.toString();
             Log.v(LOG_TAG, "Forecast JSON String: " + jsonString);
             Gson gson = new Gson();
-            product = gson.fromJson(jsonString, SingleProduct.class);
+            if(action == 0) {
+                product = gson.fromJson( jsonString, SingleProduct.class );
+                //setProduct(product); in case something doesn't get value
+            }
+            else{
+                recProduct = gson.fromJson(jsonString, ItemRecommendation.class);
+                //setRecProduct(recProduct); in case something doesn't get value
+            }
 
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
@@ -215,6 +226,14 @@ public class FetchProductsService extends JobService {
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(1, notification);
+    }
+
+    public void setProduct(SingleProduct item){
+        product = item;
+    }
+
+    public void setRecProduct(ItemRecommendation item){
+        recProduct = item;
     }
 
     @Override
