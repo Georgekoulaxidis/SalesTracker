@@ -103,7 +103,9 @@ public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.
                     .appendQueryParameter("itemFilter(2).value", max)
                     .appendQueryParameter("itemFilter(3).name", "Condition")
                     .appendQueryParameter("itemFilter(3).value(0)", newProduct)
-                    .appendQueryParameter( "itemFilter(3).value(1)", usedProduct)
+                    .appendQueryParameter("itemFilter(3).value(1)", usedProduct)
+                    .appendQueryParameter("itemFilter(4).name", "HideDuplicateItems")
+                    .appendQueryParameter("itemFilter(4).value", "true")
                     .appendQueryParameter(outputSelectorParam, "SellerInfo")
                     .appendQueryParameter( pages, "20" )
                     .build();

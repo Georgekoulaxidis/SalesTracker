@@ -26,15 +26,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DatabaseHelper dbHelper;
     public static User loggedInUser;
     public static List<FavsProduct> favourites;
+    private static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_toolbar);
 
-        loggedInUser = ((User)getIntent().getSerializableExtra("user"));
-        dbHelper = new DatabaseHelper(MainActivity.this);
-        favourites = dbHelper.getFavs(loggedInUser.getId());
+       loggedInUser = ((User)getIntent().getSerializableExtra("user"));
+       dbHelper = new DatabaseHelper(MainActivity.this);
+       favourites = dbHelper.getFavs(loggedInUser.getId());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -51,13 +52,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toogle.syncState();
 
 
+        String favouriteFragment = getIntent().getStringExtra("favourite");
+        Log.v("Dennis", String.valueOf(favouriteFragment));
+
 
         //When we rotate the device we will not return back to the first fragment.
-        if(savedInstanceState == null) {
+        if(savedInstanceState == null && favouriteFragment == null) {
             //Open the search layout immediately when the app starts.
             getSupportFragmentManager().beginTransaction().replace( R.id.fragment_container,
                     new SearchFragment() ).commit();
             navigationView.setCheckedItem( R.id.nav_search );
+        }
+        else{
+            if(favouriteFragment != null){
+                if(favouriteFragment.equals("favouriteMenu")){
+                    getSupportFragmentManager().beginTransaction().replace( R.id.fragment_container,
+                            new FavouritesFragment()).commit();
+                    navigationView.setCheckedItem( R.id.nav_favourites );
+                }
+            }
         }
 
     }
@@ -98,6 +111,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else{
             super.onBackPressed();
+        }
+
+    }
+
+    public static Context getContext(){
+        return context;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent){
+        super.onNewIntent(intent);
+        setIntent(intent);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+
+        String favouriteFragment = getIntent().getStringExtra("favourite");
+        Log.v("Dennis", String.valueOf(favouriteFragment));
+
+        if(favouriteFragment != null){
+            if(favouriteFragment.equals("favouriteMenu")){
+                getSupportFragmentManager().beginTransaction().replace( R.id.fragment_container,
+                        new FavouritesFragment()).commit();
+
+            }
         }
 
     }
