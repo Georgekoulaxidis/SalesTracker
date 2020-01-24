@@ -55,18 +55,27 @@ public class SearchResultsAdapter extends ArrayAdapter<GsonProduct.item> {
         TextView sellerTxt = view.findViewById(R.id.sellerTxt);
         ImageView imageView = view.findViewById(R.id.productImage);
         CheckBox chBox = view.findViewById(R.id.favsCheckBox);
+        String currencySign = null;
 
-        Log.v("Dennis", currentProduct.getGalleryURL(0));
-        Picasso.get()
-                .load(currentProduct.getGalleryURL(0))
-                .resize( 250, 250 )
-                .centerInside()
-                .into(imageView);
+        if(currentProduct.getGalleryURL(0) != null) {
+            Log.v( "Dennis", currentProduct.getGalleryURL( 0 ) );
+            Picasso.get()
+                    .load( currentProduct.getGalleryURL( 0 ) )
+                    .resize( 150, 200 )
+                    .centerInside()
+                    .into( imageView );
+        }
 
         titleTxt.setText(currentProduct.getTitle(0));
         sellerTxt.setText(currentProduct.getSellerInfo().get(0).getSellerUsername(0));
+        if(currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).getCurrency().equals("USD"))
+            currencySign = "$";
+        else if(currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).getCurrency().equals("EUR"))
+            currencySign = "\u20ac";
+        else if(currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).getCurrency().equals("GBP"))
+            currencySign = "\u00a3";
         priceTxt.setText( String.valueOf(currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).get__value__())
-                            + " " + currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).getCurrency());
+                            + " " + currencySign);
         Log.d("Favourites", MainActivity.favourites.toString());
         if(favs){
             chBox.setVisibility(View.INVISIBLE);

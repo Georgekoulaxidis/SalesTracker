@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -42,7 +40,7 @@ public class ProductsFragment extends Fragment {
         if (getArguments() != null) {
             itemList = getArguments().getParcelableArrayList("Json");
         }
-        Log.d("Dennis", String.valueOf( itemList) );
+        Log.d("Dennis", String.valueOf(itemList) );
 
         Gson gson = new Gson();
         String json = gson.toJson(itemList.get(0));

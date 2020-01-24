@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         String favouriteFragment = getIntent().getStringExtra("favourite");
-        Log.v("Dennis", String.valueOf(favouriteFragment));
+        Log.v("MainActivity", String.valueOf(favouriteFragment));
 
 
         //When we rotate the device we will not return back to the first fragment.
@@ -87,6 +87,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else{
             if(favouriteFragment != null){
                 if(favouriteFragment.equals("favouriteMenu")){
+                    getSupportFragmentManager().beginTransaction().replace( R.id.fragment_container,
+                            new FavouritesFragment()).commit();
+                    navigationView.setCheckedItem( R.id.nav_favourites );
+                }
+                else if(favouriteFragment.equals("popup")){
                     getSupportFragmentManager().beginTransaction().replace( R.id.fragment_container,
                             new FavouritesFragment()).commit();
                     navigationView.setCheckedItem( R.id.nav_favourites );
