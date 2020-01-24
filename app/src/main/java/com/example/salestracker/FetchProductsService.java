@@ -29,18 +29,16 @@ public class FetchProductsService extends JobService {
 
     private final String LOG_TAG = "Dennis";
     private String keyword;
-    private String title = "Apple iPhone 5c - 16GB - Blue (Unlocked) A1507 (GSM)";
-    private double currentPrice = 24.37;
+    private String title = "Apple iPhone 5s 16GB Factory Unlocked SRF A1586";
+    private double currentPrice = 170.00;
     private String payment;
     private String freeShipping;
-    private int min = 0;
-    private int max;
     private SingleProduct product;
-    private ItemRecommendation recProduct;
+    //private ItemRecommendation recProduct;
     private String jsonString;
-    private String code = "153793880117";
-    private String siteId;
-    private int action = 0;
+    private String code = "283492091677";
+    private String globalId = "0";
+
 
 
 
@@ -58,23 +56,25 @@ public class FetchProductsService extends JobService {
         new Thread(new Runnable() {
             @Override
             public void run() {
-
-                CheckAvaialability(code);
-                if(product.getAck().equals("Failure") || !product.getItem().getTitle().equals(title)){
+                Log.v("Product Price", String.valueOf(product.getItem().getConvertedCurrentPrice().getValue()));
+                int action = 0;
+                SingleProduct item = CheckAvaialability(code, action);
+                ItemRecommendation recProduct;
+                if(item.getAck().equals("Failure") || !product.getItem().getTitle().equals(title)){
                     //Product doesn't exist anymore! (RIP you should have order it earlier)
-                    BuildNotification(MainActivity.getContext(),"Product out of stock", title + " has gone out of stock");
-                } else if(product.getItem().getConvertedCurrentPrice().getValue() < currentPrice){
+                    BuildNotification(getApplicationContext(),"Product out of stock", title + " has gone out of stock", action);
+                }else if(item.getItem().getConvertedCurrentPrice().getValue() < currentPrice){
                     //Notification to inform the user about the price drop.
-                    BuildNotification(MainActivity.getContext(),"Price dropped", title + " price has dropped");
+                    BuildNotification(getApplicationContext(),"Price dropped", title + " price has dropped", action);
 
                 }
                 else{
                     action = 1;
-                    CheckAvaialability(code);
+                    recProduct = CheckSimilar(code);
                     if(recProduct.getGetSimilarItemsResponse().get(0).getAck().equals("Success")) {
                         if(recProduct.getGetSimilarItemsResponse().get(0).getItemRecommendation().size() != 0) {
                             if(recProduct.getGetSimilarItemsResponse().get(0).getItemRecommendation().get(0).getItem().get(0).getCurrentPrice().get(0).get__value__() <= currentPrice)
-                                BuildNotification( MainActivity.getContext(), "Similar Product", "There's a new product similar to the one that you have in your list" );
+                                BuildNotification( FetchProductsService.this, "Similar Product", "There's a new product similar to the one that you have in your list" , action);
                             else
                                 Log.v("Dennis", "There is not a cheaper similar product");
                         }
@@ -82,23 +82,20 @@ public class FetchProductsService extends JobService {
                             Log.v("Dennis", "List with similar products is empty");
 
                     }
-                    action = 0;
-
 
                 }
 
-                //BuildNotification(getContext(),"You have failed Anakin", "I have the high ground");
                 Log.d("BootReceiver", "Thread running");
                 jobFinished(params, true);
             }
         }).start();
     }
 
-    public void CheckAvaialability(String code){
+    public SingleProduct CheckAvaialability(String code, int action){
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
 
-        Log.d(LOG_TAG,"ASAP!");
+        Log.d(LOG_TAG,"CheckAvailability");
 
         try{
             Uri builtUri;
@@ -117,12 +114,13 @@ public class FetchProductsService extends JobService {
                 itemId = "itemID";
 
                 builtUri = Uri.parse( basicUrl ).buildUpon()
-                        .appendQueryParameter( call, "GetSingleItem" )
-                        .appendQueryParameter( datatype, "JSON" )
-                        .appendQueryParameter( appid, "Dionisis-SmartSho-PRD-0388a6d5f-56b83621" )
-                        .appendQueryParameter( siteId, "0" )
-                        .appendQueryParameter( version, "967" )
-                        .appendQueryParameter( itemId, code )
+                        .appendQueryParameter(call, "GetSingleItem" )
+                        .appendQueryParameter(datatype, "JSON" )
+                        .appendQueryParameter(appid, "Dionisis-SmartSho-PRD-0388a6d5f-56b83621" )
+                        .appendQueryParameter(siteId, globalId)
+                        .appendQueryParameter(version, "967" )
+                        .appendQueryParameter("includeSelector", "Details,ShippingCost")
+                        .appendQueryParameter(itemId, code )
                         .build();
             }
             else{
@@ -158,11 +156,12 @@ public class FetchProductsService extends JobService {
 
             InputStream inputStream = urlConnection.getInputStream();
             StringBuffer buffer = new StringBuffer();
-            if (inputStream == null) {
+            if (inputStream != null) {
                 // Nothing to do.
                 //return null;
+                reader = new BufferedReader(new InputStreamReader(inputStream));
             }
-            reader = new BufferedReader(new InputStreamReader(inputStream));
+
 
             String line;
             while ((line = reader.readLine()) != null) {
@@ -174,26 +173,25 @@ public class FetchProductsService extends JobService {
 
             if (buffer.length() == 0) {
                 // Stream was empty.  No point in parsing.
-                //return null;
+                return null;
             }
 
             jsonString = buffer.toString();
             Log.v(LOG_TAG, "Forecast JSON String: " + jsonString);
             Gson gson = new Gson();
-            if(action == 0) {
-                product = gson.fromJson( jsonString, SingleProduct.class );
-                //setProduct(product); in case something doesn't get value
-            }
-            else{
+            product = gson.fromJson(jsonString, SingleProduct.class );
+            //setProduct(product); in case something doesn't get value
+
+            /*else{
                 recProduct = gson.fromJson(jsonString, ItemRecommendation.class);
                 //setRecProduct(recProduct); in case something doesn't get value
-            }
+            }*/
 
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             // If the code didn't successfully get the weather data, there's no point in attemping
             // to parse it.
-            //return null;
+            return null;
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -209,12 +207,96 @@ public class FetchProductsService extends JobService {
 
 
         Log.v("JOJO", product.getAck());
-       //return product;
+       return product;
     }
 
-    public void BuildNotification(final Context context, final String Title, final String msg){
+    public ItemRecommendation CheckSimilar(String code){
+        HttpURLConnection urlConnection = null;
+        BufferedReader reader = null;
+        ItemRecommendation recproduct;
+
+        try{
+
+            String basicUrl = "http://svcs.ebay.com/MerchandisingService?";
+            String operation = "OPERATION-NAME";
+            String servName = "SERVICE-NAME";
+            String version = "SERVICE-VERSION";
+            String appid = "CONSUMER-ID";
+            String dataType = "RESPONSE-DATA-FORMAT";
+            String payload = "REST-PAYLOAD";
+            String itemId = "itemId";
+            String results = "maxResults";
+
+            Uri builtUri = Uri.parse( basicUrl ).buildUpon()
+                    .appendQueryParameter( operation, "getSimilarItems" )
+                    .appendQueryParameter( servName, "MerchandisingService" )
+                    .appendQueryParameter( version, "1.1.0" )
+                    .appendQueryParameter( appid, "Dionisis-SmartSho-PRD-0388a6d5f-56b83621" )
+                    .appendQueryParameter(dataType, "JSON")
+                    .appendQueryParameter(payload, "")
+                    .appendQueryParameter( itemId, code)
+                    .appendQueryParameter(results, "1")
+                    .build();
+
+            URL url = new URL(builtUri.toString());
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+
+            InputStream inputStream = urlConnection.getInputStream();
+            StringBuffer buffer = new StringBuffer();
+            if (inputStream == null) {
+                // Nothing to do.
+                return null;
+            }
+            reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
+                // But it does make debugging a *lot* easier if you print out the completed
+                // buffer for debugging.
+                buffer.append(line + "\n");
+            }
+
+            if (buffer.length() == 0) {
+                // Stream was empty.  No point in parsing.
+                return null;
+            }
+
+            jsonString = buffer.toString();
+            Log.v(LOG_TAG, "Forecast JSON String: " + jsonString);
+            Gson gson = new Gson();
+            recproduct = gson.fromJson(jsonString, ItemRecommendation.class);
+
+        }catch (IOException e) {
+            Log.e(LOG_TAG, "Error ", e);
+            // If the code didn't successfully get the weather data, there's no point in attemping
+            // to parse it.
+            return null;
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (final IOException e) {
+                    Log.e(LOG_TAG, "Error closing stream", e);
+                }
+            }
+        }
+
+
+        return recproduct;
+    }
+
+    public void BuildNotification(final Context context, final String Title, final String msg, int action){
         Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra("favourite", "favouriteMenu");
+        if(action == 0)
+            intent.putExtra("favourite", "favouriteMenu");
+        else if(action == 1)
+            intent.putExtra("favourite", "popUp");
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -223,7 +305,7 @@ public class FetchProductsService extends JobService {
                 .setContentTitle(Title)
                 .setContentText(msg)
                 .setVibrate(new long[] {1000, 1000})
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 // Set the intent that will fire when the user taps the notification
                 .setColor( Color.BLUE )
                 .setAutoCancel(true)
@@ -239,9 +321,9 @@ public class FetchProductsService extends JobService {
         product = item;
     }
 
-    public void setRecProduct(ItemRecommendation item){
+    /*public void setRecProduct(ItemRecommendation item){
         recProduct = item;
-    }
+    }*/
 
     @Override
     public boolean onStopJob(JobParameters params) {

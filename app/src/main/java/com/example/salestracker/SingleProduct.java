@@ -43,6 +43,33 @@ public class SingleProduct implements Serializable {
         private String ConditionID;
         private String ConditionDisplayName;
         private priceData ConvertedCurrentPrice;
+        private String GalleryURL;
+        private sellerDetails Seller;
+        private shippingService ShippingCostSummary;
+
+        public shippingService getShippingCostSummary() {
+            return ShippingCostSummary;
+        }
+
+        public void setShippingCostSummary(shippingService shippingCostSummary) {
+            ShippingCostSummary = shippingCostSummary;
+        }
+
+        public sellerDetails getSeller() {
+            return Seller;
+        }
+
+        public void setSeller(sellerDetails seller) {
+            Seller = seller;
+        }
+
+        public String getGalleryURL() {
+            return GalleryURL;
+        }
+
+        public void setGalleryURL(String galleryURL) {
+            GalleryURL = galleryURL;
+        }
 
         public String getItemID() {
             return ItemID;
@@ -119,6 +146,30 @@ public class SingleProduct implements Serializable {
 
         public void setCurrencyID(String currencyID) {
             CurrencyID = currencyID;
+        }
+    }
+
+    public class sellerDetails{
+        private String UserID;
+
+        public String getUserID() {
+            return UserID;
+        }
+
+        public void setUserID(String userID) {
+            UserID = userID;
+        }
+    }
+
+    public class shippingService{
+        private double Value;
+
+        public double getValue() {
+            return Value;
+        }
+
+        public void setValue(double value) {
+            Value = value;
         }
     }
 }

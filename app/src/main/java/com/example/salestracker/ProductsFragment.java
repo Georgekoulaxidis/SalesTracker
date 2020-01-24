@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -31,7 +29,7 @@ public class ProductsFragment extends Fragment {
     private static ListView listProducts;
 
     public static void updateActivity(Activity activity){
-        mActivityRef = new WeakReference<Activity>(activity);
+        mActivityRef = new WeakReference<>(activity);
     }
 
     public ProductsFragment() {
@@ -47,7 +45,7 @@ public class ProductsFragment extends Fragment {
         if (getArguments() != null) {
             itemList = getArguments().getParcelableArrayList("Json");
         }
-        Log.d("Dennis", String.valueOf( itemList) );
+        Log.d("Dennis", String.valueOf(itemList) );
 
 
         if(itemList.size() != 0) {
