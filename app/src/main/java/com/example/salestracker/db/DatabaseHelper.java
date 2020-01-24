@@ -1,17 +1,16 @@
-package com.example.salestracker;
+package com.example.salestracker.db;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import com.example.salestracker.GsonParsing.GsonProduct;
+import com.example.salestracker.Model.User;
 import com.google.gson.Gson;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,17 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_USR_ID = "user_id";
     private static final String COLUMN_PRODUCT_ID = "product_id";
     private static final String COLUMN_PRODUCT_JSON = "product_json";
-    /*private static final String COLUMN_PRODUCT_TITLE = "product_title";
-    private static final String COLUMN_PRODUCT_PRICE = "product_price";
-    private static final String COLUMN_PRODUCT_SELLER = "product_seller";
-    private static final String COLUMN_PRODUCT_URL = "product_url";
-    private static final String COLUMN_PRODUCT_CONDITION = "product_condition";
-    private static final String COLUMN_EBAY_STORE = "ebay_store";
-    private static final String COLUMN_PRODUCT_MINPRICE = "product_minprice";
-    private static final String COLUMN_PRODUCT_MAXPRICE = "product_maxprice";
-    private static final String COLUMN_PRODUCT_SEARCHKEYWORD = "search_keyword";
-    private static final String COLUMN_FREE_SHIPPING = "free_shipping";
-*/
+
     private Gson gson;
 
     // create table sql query
@@ -58,10 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // create table favourites sql query
     private String CREATE_FAVS_TABLE = "CREATE TABLE " + TABLE_FAVS + "("
             + COLUMN_USR_ID + " INTEGER," + COLUMN_PRODUCT_ID + " TEXT,"
-            /*+ COLUMN_PRODUCT_TITLE + " TEXT," + COLUMN_PRODUCT_PRICE + " DOUBLE," + COLUMN_PRODUCT_SELLER + " TEXT,"
-            + COLUMN_PRODUCT_URL + " TEXT," + COLUMN_PRODUCT_CONDITION + " TEXT," + COLUMN_EBAY_STORE + " TEXT,"
-            + COLUMN_PRODUCT_MINPRICE + " TEXT," + COLUMN_PRODUCT_MAXPRICE + " TEXT," + COLUMN_PRODUCT_SEARCHKEYWORD + " TEXT,"
-            + COLUMN_FREE_SHIPPING + " BOOLEAN,"*/ + COLUMN_PRODUCT_JSON + " TEXT," + "PRIMARY KEY(" + COLUMN_USR_ID + ", "
+            + COLUMN_PRODUCT_JSON + " TEXT," + "PRIMARY KEY(" + COLUMN_USR_ID + ", "
             + COLUMN_PRODUCT_ID + "), FOREIGN KEY(" + COLUMN_USR_ID + ") REFERENCES "
             + TABLE_USER + "(" + COLUMN_USER_ID + "))";
 
