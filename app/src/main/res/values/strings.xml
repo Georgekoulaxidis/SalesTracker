@@ -6,16 +6,25 @@
     <string name="hint_confirm_password">Confirm Password</string>
     <string name="text_login">Login</string>
     <string name="text_register">Register</string>
+    <string name="text_save_changes">Save Changes</string>
     <string name="text_not_member">No account yet? Create one</string>
     <string name="text_already_member">Already a member? Login</string>
+    <string name="text_add_photo">Add your image profile</string>
     <string name="login_failed">"Login failed"</string>
     <string name="Currency">Choose Currency</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="about_text">SalesTracker is an application which lets users search for products
+        in the eBay API. It gives the user the opportunity to save his/her favourite products and
+        get notified whenever their price has changed or a similar product is being sold in a lower price
+        than the one in his/her list.\n\nThis app was developed by Koulaxidis George and
+        Antoniadis Dionisis, as part of an academic project for the course \'Mobile apps development\'</string>
+    <string name="copyright_text">All rights reserved 2020. Copyright \u00a9.</string>
 
     <string-array name="Countries">
         <item>USA</item>
         <item>DEU</item>
         <item>UK</item>
     </string-array>
+
 </resources>

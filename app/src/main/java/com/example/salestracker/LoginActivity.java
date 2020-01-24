@@ -32,13 +32,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private User user;
 
     public static final String myPreferences = "loginPrefs";
-    public static final String loggedIn = "loggedIn";
-    public static final String Email = "email";
-    public static final String Password = "password";
+    public String loggedIn = "loggedIn";
+    public String Email = "email";
+    public String Password = "password";
     private SharedPreferences sp;
+
+    // static variable used to store user's image, so as to be passed to the MainActivity afterwards.
+    public static byte[] userImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -99,13 +103,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         Snackbar.make(rootLayout, getString(R.string.login_failed), Snackbar.LENGTH_LONG).show();
                     }
 
-                    /*String[] selectionArgs = {textInputEditTextEmail.getText().toString(), textInputEditTextPassword.getText().toString()};
-                    DatabaseTask task  = new DatabaseTask(3, "User", null, dbHelper, selectionArgs);
-                    if(αυτο που επιστρεφει το task ειναι true) {
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        emptyInputEditText();
-                        startActivity(intent);
-                    }*/
                 }
                 final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(v.getRootView().getWindowToken(), 0);
@@ -125,6 +122,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void goToMainActivity(User user) {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        userImage = user.getImage();
+        user.setImage(null);
         intent.putExtra("user", user);
         startActivity(intent);
         finish();

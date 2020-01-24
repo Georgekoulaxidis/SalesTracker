@@ -7,9 +7,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -26,6 +33,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DatabaseHelper dbHelper;
     public static User loggedInUser;
     public static List<FavsProduct> favourites;
+
+    public static Context getContext() {
+        return context;
+    }
+
     private static Context context;
 
     @Override
@@ -33,21 +45,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_toolbar);
 
-       loggedInUser = ((User)getIntent().getSerializableExtra("user"));
-       dbHelper = new DatabaseHelper(MainActivity.this);
-       favourites = dbHelper.getFavs(loggedInUser.getId());
+        loggedInUser = ((User)getIntent().getSerializableExtra("user"));
+        loggedInUser.setImage(LoginActivity.userImage);
+        dbHelper = new DatabaseHelper(MainActivity.this);
+        favourites = dbHelper.getFavs(loggedInUser.getId());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.draw_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
+        loadDrawersContent(navigationView);
         navigationView.setNavigationItemSelectedListener(this);
 
 
         ActionBarDrawerToggle toogle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                NavigationView navigationView = findViewById(R.id.nav_view);
+                loadDrawersContent(navigationView);
+            }
+        };
         drawer.addDrawerListener( toogle );
         toogle.syncState();
 
@@ -80,6 +100,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    private void loadDrawersContent (NavigationView navigationView) {
+        LinearLayout headerView = (LinearLayout) navigationView.getHeaderView(0);
+        ImageView usrImgView = headerView.findViewById(R.id.usrImgView);
+        usrImgView.setImageBitmap(BitmapFactory.decodeByteArray(MainActivity
+                .loggedInUser.getImage(), 0, MainActivity.loggedInUser.getImage().length));
+        TextView userName = headerView.findViewById(R.id.userNameTxt);
+        TextView userEmail = headerView.findViewById(R.id.userEmailTxt);
+        userName.setText(loggedInUser.getName());
+        userEmail.setText(loggedInUser.getEmail());
+    }
+
+    @Override
+    public void onOptionsMenuClosed(Menu menu) {
+        super.onOptionsMenuClosed(menu);
+
+
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         switch (menuItem.getItemId()){
@@ -90,6 +128,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_favourites:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new FavouritesFragment()).addToBackStack(null).commit();
+                break;
+            case R.id.nav_about:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new AboutFragment()).addToBackStack(null).commit();
+                break;
+            case R.id.nav_details:
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new UserDetailsFragment()).addToBackStack(null).commit();
                 break;
             case R.id.nav_logout:
                 SharedPreferences sp = getSharedPreferences(LoginActivity.myPreferences, Context.MODE_PRIVATE);
@@ -118,10 +164,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
         }
 
-    }
-
-    public static Context getContext(){
-        return context;
     }
 
     @Override
