@@ -55,16 +55,15 @@ public class SearchResultsAdapter extends ArrayAdapter<GsonProduct.item> {
         TextView sellerTxt = view.findViewById(R.id.sellerTxt);
         ImageView imageView = view.findViewById(R.id.productImage);
         CheckBox chBox = view.findViewById(R.id.favsCheckBox);
-        String currencySign = null;
+        String currencySign = "fak";
 
-        if(currentProduct.getGalleryURL(0) != null) {
+        if(currentProduct != null) {
             Log.v( "Dennis", currentProduct.getGalleryURL( 0 ) );
             Picasso.get()
                     .load( currentProduct.getGalleryURL( 0 ) )
                     .resize( 150, 200 )
                     .centerInside()
                     .into( imageView );
-        }
 
         titleTxt.setText(currentProduct.getTitle(0));
         sellerTxt.setText(currentProduct.getSellerInfo().get(0).getSellerUsername(0));
