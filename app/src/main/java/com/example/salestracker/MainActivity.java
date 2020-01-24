@@ -2,9 +2,11 @@ package com.example.salestracker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
@@ -59,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         loadDrawersContent(navigationView);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         ActionBarDrawerToggle toogle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
             @Override
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     new SearchFragment() ).commit();
             navigationView.setCheckedItem( R.id.nav_search );
         }
-        else{
+        else {
             if(favouriteFragment != null){
                 if(favouriteFragment.equals("favouriteMenu")){
                     getSupportFragmentManager().beginTransaction().replace( R.id.fragment_container,
@@ -98,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
             }
         }
-
     }
 
     private void loadDrawersContent (NavigationView navigationView) {
@@ -116,8 +116,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onOptionsMenuClosed(Menu menu) {
         super.onOptionsMenuClosed(menu);
-
-
     }
 
 
@@ -164,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(drawer.isDrawerOpen(GravityCompat.START )){
             drawer.closeDrawer(GravityCompat.START);
         }
-        else{
+        else {
             super.onBackPressed();
         }
 
@@ -179,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume(){
         super.onResume();
-
 
         String favouriteFragment = getIntent().getStringExtra("favourite");
         Log.v("Dennis", String.valueOf(favouriteFragment));
@@ -201,13 +198,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(itemList != null)
             bundle.putParcelableArrayList("Json", itemList);
 
-        Log.d("Dennis", "ReceiveJson accessed successfully");
+        if(itemList.size() != 0) {
+            Log.d("Dennis", "ReceiveJson accessed successfully");
 
-        ProductsFragment fragObj = new ProductsFragment();
-        fragObj.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                fragObj).addToBackStack(null).commit();
+            ProductsFragment fragObj = new ProductsFragment();
+            fragObj.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragObj).addToBackStack(null).commit();
+        }
+        else {
+            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+            alertDialog.setTitle("Alert");
+            alertDialog.setMessage("No products could be fetched..");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+        }
     }
-
 
 }

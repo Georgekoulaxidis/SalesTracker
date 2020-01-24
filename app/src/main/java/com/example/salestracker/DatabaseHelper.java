@@ -187,18 +187,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        /*values.put(COLUMN_USR_ID, fp.getUserId());
-        values.put(COLUMN_PRODUCT_ID, fp.getProductId());
-        values.put(COLUMN_PRODUCT_TITLE, fp.getProductTitle());
-        values.put(COLUMN_PRODUCT_PRICE, fp.getProductPrice());
-        values.put(COLUMN_PRODUCT_SELLER, fp.getProductSeller());
-        values.put(COLUMN_PRODUCT_CONDITION, fp.getCondition());
-        values.put(COLUMN_PRODUCT_URL, fp.getProductUrl());
-        values.put(COLUMN_PRODUCT_MINPRICE, fp.getMinPrice());
-        values.put(COLUMN_PRODUCT_MAXPRICE, fp.getMaxPrice());
-        values.put(COLUMN_PRODUCT_SEARCHKEYWORD, fp.getSearchKeyword());
-        values.put(COLUMN_EBAY_STORE, fp.geteBayStore());
-        values.put(COLUMN_FREE_SHIPPING, fp.getFreeShipping());*/
         values.put(COLUMN_USR_ID, userId);
         values.put(COLUMN_PRODUCT_ID, fp.getItemId().get(0));
         String json = gson.toJson(fp);
@@ -217,9 +205,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public /*List<FavsProduct>*/List<GsonProduct.item> getFavs(int userId) {
-        String[] columns = {COLUMN_PRODUCT_ID, COLUMN_PRODUCT_JSON/*COLUMN_PRODUCT_TITLE, COLUMN_PRODUCT_PRICE, COLUMN_PRODUCT_SELLER,
-                COLUMN_PRODUCT_URL, COLUMN_PRODUCT_CONDITION, COLUMN_EBAY_STORE, COLUMN_PRODUCT_MINPRICE,
-                COLUMN_PRODUCT_MAXPRICE, COLUMN_PRODUCT_SEARCHKEYWORD, COLUMN_FREE_SHIPPING*/};
+        String[] columns = {COLUMN_PRODUCT_ID, COLUMN_PRODUCT_JSON};
         SQLiteDatabase db = this.getReadableDatabase();
         String selection = COLUMN_USR_ID + " = ?";
         String[] selectionArgs = {String.valueOf(userId)};
@@ -238,19 +224,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             /*ArrayList<FavsProduct> favs = new ArrayList<FavsProduct>();*/
             ArrayList<GsonProduct.item> favs = new ArrayList<>();
             while(cursor.moveToNext()) {
-                /*FavsProduct fp = new FavsProduct();*/
-                /*fp.setUserId(userId);
-                fp.setProductId(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_ID)));
-                fp.setProductTitle(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_TITLE)));
-                fp.setProductPrice(cursor.getDouble(cursor.getColumnIndex(COLUMN_PRODUCT_PRICE)));
-                fp.setProductSeller(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_SELLER)));
-                fp.setProductUrl(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_URL)));
-                fp.setCondition(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_CONDITION)));
-                fp.setMinPrice(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_MINPRICE)));
-                fp.setMaxPrice(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_MAXPRICE)));
-                fp.setSearchKeyword(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_SEARCHKEYWORD)));
-                fp.seteBayStore(cursor.getString(cursor.getColumnIndex(COLUMN_EBAY_STORE)));
-                fp.setFreeShipping(cursor.getInt(cursor.getColumnIndex(COLUMN_FREE_SHIPPING)) > 0);*/
                 GsonProduct.item fp = gson.fromJson(cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_JSON)), GsonProduct.item.class);
 
                 favs.add(fp);

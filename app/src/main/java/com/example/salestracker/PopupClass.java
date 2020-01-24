@@ -51,14 +51,46 @@ public class PopupClass {
         titleTextView.setText(currentProduct.getTitle(0));
 
         TextView priceTextView = popupView.findViewById(R.id.priceTxt);
+        String currencySign = null;
+        if(currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).getCurrency().equals("USD"))
+            currencySign = "$";
+        else if(currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).getCurrency().equals("EUR"))
+            currencySign = "\u20ac";
+        else if(currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).getCurrency().equals("GBP"))
+            currencySign = "\u00a3";
         priceTextView.append(String.valueOf(currentProduct.getSellingStatus()
                                 .get(0).getPriceDetails().get(0).get__value__()) + " " +
-                                currentProduct.getSellingStatus().get(0)
-                                .getPriceDetails().get(0).getCurrency());
+                                currencySign);
 
         TextView sellerTextView = popupView.findViewById(R.id.sellerTxt);
         sellerTextView.append(currentProduct.getSellerInfo()
                 .get(0).getSellerUsername(0));
+
+        TextView globalIdTextView = popupView.findViewById(R.id.globalIdTxt);
+        globalIdTextView.setText(currentProduct.getGlobalId().get(0));
+
+        TextView locationTextView = popupView.findViewById(R.id.locationTxt);
+        locationTextView.append(currentProduct.getLocation().get(0));
+
+        TextView shippingTextView = popupView.findViewById(R.id.shippingTypeTxt);
+        shippingTextView.append(currentProduct.getShippingInfo().get(0).getShippingType(0));
+
+        TextView shippingCostTextView = popupView.findViewById(R.id.shippingCostTxt);
+        if(currentProduct.getShippingInfo().get(0).getShippingType(0).equals("Calculated")) {
+            shippingCostTextView.append("-");
+        }
+        else {
+            shippingCostTextView.append(currentProduct.getShippingInfo().get(0).getShippingServiceCost().get(0).get__value__() + " " + currencySign);
+        }
+
+        TextView paymentMethodTextView = popupView.findViewById(R.id.paymentMethodTxt);
+        paymentMethodTextView.append(currentProduct.getPaymentMethod().get(0));
+
+        TextView conditionTextView = popupView.findViewById(R.id.conditionTxt);
+        conditionTextView.append(currentProduct.getCondition().get(0).getConditionDisplayName(0));
+
+        TextView itemURLTextView = popupView.findViewById(R.id.itemURLTxt);
+        itemURLTextView.append(currentProduct.getViewItemURL().get(0));
 
         CheckBox favCheckBox = popupView.findViewById(R.id.checkBox);
         Log.d("Favourites", MainActivity.favourites.toString());
@@ -115,12 +147,10 @@ public class PopupClass {
     }
 
 
-    public void showSngleItem(SingleProduct recproduct, final View view, final ArrayAdapter adapter) {
+    /*public void showSngleItem(SingleProduct recproduct, final View view, final ArrayAdapter adapter) {
         LayoutInflater inflater = (LayoutInflater) view.getContext().getSystemService(view.getContext().LAYOUT_INFLATER_SERVICE);
 
         final View popupView = inflater.inflate(R.layout.popup_layout, null);
-        //int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        //int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         Display display = view.getDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -147,9 +177,9 @@ public class PopupClass {
         TextView priceTextView = popupView.findViewById(R.id.priceTxt);
         priceTextView.append(String.valueOf(currentProduct.getConvertedCurrentPrice().getCurrencyID()));
 
-        /*TextView sellerTextView = popupView.findViewById(R.id.sellerTxt);
+        *//*TextView sellerTextView = popupView.findViewById(R.id.sellerTxt);
         sellerTextView.append(currentProduct.getSellerInfo()
-                .get(0).getSellerUsername(0));*/
+                .get(0).getSellerUsername(0));*//*
 
         CheckBox favCheckBox = popupView.findViewById(R.id.checkBox);
         Log.d("Favourites", MainActivity.favourites.toString());
@@ -223,6 +253,6 @@ public class PopupClass {
                 return true;
             }
         });
-    }
+    }*/
 
 }

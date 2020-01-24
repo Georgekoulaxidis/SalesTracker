@@ -42,30 +42,19 @@ public class ProductsFragment extends Fragment {
         }
         Log.d("Dennis", String.valueOf(itemList) );
 
-        Gson gson = new Gson();
-        String json = gson.toJson(itemList.get(0));
-        System.out.println("json = " + json);
-        GsonProduct.item product = gson.fromJson(json, GsonProduct.item.class);
-        System.out.println(product.getItemId().get(0));
-
         TextView titleResult = view.findViewById( R.id.titleResult);
-        if(itemList.size() != 0) {
-            titleResult.setText("Products Result");
+        titleResult.setText("Products Result");
 
-            listProducts = view.findViewById( R.id.productsList );
-            final SearchResultsAdapter myAdapter = new SearchResultsAdapter( getActivity(), R.layout.custom_row, itemList );
-            myAdapter.setFavs(false);
-            listProducts.setAdapter( myAdapter );
-            listProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    new PopupClass().showPopup(itemList, view, position, myAdapter);
-                }
+        listProducts = view.findViewById( R.id.productsList );
+        final SearchResultsAdapter myAdapter = new SearchResultsAdapter( getActivity(), R.layout.custom_row, itemList );
+        myAdapter.setFavs(false);
+        listProducts.setAdapter( myAdapter );
+        listProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    new PopupClass().showPopup(itemList, view, position, myAdapter); }
             });
-            registerForContextMenu(listProducts);
-        }else{
-            titleResult.setText("We didn't find any product");
-        }
+        registerForContextMenu(listProducts);
 
         return view;
     }

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
@@ -61,7 +62,7 @@ public class SearchResultsAdapter extends ArrayAdapter<GsonProduct.item> {
             Log.v( "Dennis", currentProduct.getGalleryURL( 0 ) );
             Picasso.get()
                     .load( currentProduct.getGalleryURL( 0 ) )
-                    .resize( 150, 200 )
+                    .resize( 250, 250 )
                     .centerInside()
                     .into( imageView );
 
@@ -88,6 +89,9 @@ public class SearchResultsAdapter extends ArrayAdapter<GsonProduct.item> {
             chBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                    Gson gson = new Gson();
+                    String json = gson.toJson(currentProduct);
+                    System.out.println(json);
                     DatabaseHelper dbHelper = new DatabaseHelper(getContext());
                     if(isChecked) {
                         MainActivity.favourites.add(currentProduct);

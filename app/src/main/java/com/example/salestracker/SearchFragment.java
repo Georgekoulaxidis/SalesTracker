@@ -99,16 +99,11 @@ public class SearchFragment extends Fragment {
                      country = "EBAY-GB";
 
                 MainActivity mHelper = (MainActivity) getActivity();
-                //Intent intent = new Intent(getActivity().getBaseContext(), MainActivity.class);
-                //intent.putExtra("item", GetJson());
 
                 item = GetJson();
                 final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-                //if(item.size() != 0)
                 mHelper.ReceiveJson( item );
-                //else
-                    //mHelper.NullPossibility();
             }
         } );
 

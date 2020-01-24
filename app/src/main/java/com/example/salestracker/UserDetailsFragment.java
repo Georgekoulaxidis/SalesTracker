@@ -2,6 +2,7 @@ package com.example.salestracker;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -13,19 +14,23 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -106,19 +111,35 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
 
                     if (!dbHelper.checkUser(textInputEditTextEmail.getText().toString().trim())
                             || textInputEditTextEmail.getText().toString().trim().equals(MainActivity.loggedInUser.getEmail())) {
-                        //Βαλε alert για confirmation και βαλε τα νεα στοιχεια του user στη βαση
-                        //Οταν ανανεώνονται τα στοιχεία στη βάση να φαίνονται στο nav_header
-                        //TransactionTooLargeException
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
+                        alertDialog.setTitle("Confirm password");
+                        alertDialog.setMessage("Are you sure you want to update your data?");
+                        alertDialog.setPositiveButton("UPDATE",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        MainActivity.loggedInUser.setName(textInputEditTextName.getText().toString().trim());
+                                        MainActivity.loggedInUser.setEmail(textInputEditTextEmail.getText().toString().trim());
+                                        MainActivity.loggedInUser.setPassword(textInputEditTextPassword.getText().toString().trim());
+                                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                        ((BitmapDrawable)userImgView.getDrawable()).getBitmap().compress(Bitmap.CompressFormat.PNG, 0, stream);;
+                                        MainActivity.loggedInUser.setImage(stream.toByteArray());
+                                        dbHelper.updateUser(MainActivity.loggedInUser);
 
-                        MainActivity.loggedInUser.setName(textInputEditTextName.getText().toString().trim());
-                        MainActivity.loggedInUser.setEmail(textInputEditTextEmail.getText().toString().trim());
-                        MainActivity.loggedInUser.setPassword(textInputEditTextPassword.getText().toString().trim());
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        ((BitmapDrawable)userImgView.getDrawable()).getBitmap().compress(Bitmap.CompressFormat.PNG, 0, stream);;
-                        MainActivity.loggedInUser.setImage(stream.toByteArray());
-                        dbHelper.updateUser(MainActivity.loggedInUser);
+                                        Snackbar.make(rootView, "Your details were updated successfully!", Snackbar.LENGTH_LONG).show();
+                                            dialog.dismiss();
 
-                        Snackbar.make(rootView, "Your details were updated successfully!", Snackbar.LENGTH_LONG).show();
+                                    }
+                                });
+                        alertDialog.setNegativeButton("CANCEL",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        AlertDialog alert = alertDialog.create();
+                        alert.show();
+
                     } else {
                         Snackbar.make(rootView, "User with the email address you inserted already exists", Snackbar.LENGTH_LONG).show();
                     }
@@ -133,10 +154,10 @@ public class UserDetailsFragment extends Fragment implements View.OnClickListene
 
                 try {
                     if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                     } else {
                         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                         // Start the Intent
                         startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
                     }
