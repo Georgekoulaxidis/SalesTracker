@@ -54,72 +54,71 @@ public class SearchResultsAdapter extends ArrayAdapter<GsonProduct.item> {
         TextView sellerTxt = view.findViewById(R.id.sellerTxt);
         ImageView imageView = view.findViewById(R.id.productImage);
         CheckBox chBox = view.findViewById(R.id.favsCheckBox);
-        String currencySign = null;
+        String currencySign = "fak";
 
-        if(currentProduct.getGalleryURL(0) != null) {
+        if(currentProduct != null) {
             Log.v( "Dennis", currentProduct.getGalleryURL( 0 ) );
             Picasso.get()
                     .load( currentProduct.getGalleryURL( 0 ) )
                     .resize( 150, 200 )
                     .centerInside()
                     .into( imageView );
-        }
 
-        titleTxt.setText(currentProduct.getTitle(0));
-        sellerTxt.setText(currentProduct.getSellerInfo().get(0).getSellerUsername(0));
-        if(currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).getCurrency().equals("USD"))
-            currencySign = "$";
-        else if(currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).getCurrency().equals("EUR"))
-            currencySign = "\u20ac";
-        else if(currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).getCurrency().equals("GBP"))
-            currencySign = "\u00a3";
-        priceTxt.setText( String.valueOf(currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).get__value__())
-                            + " " + currencySign);
-        Log.d("Favourites", MainActivity.favourites.toString());
-        for(FavsProduct fp: MainActivity.favourites) {
-            if(fp.getProductId().equals(currentProduct.getItemId().get(0))) {
-                chBox.setChecked(true);
-            }
-        }
-        chBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-                FavsProduct tempFav = new FavsProduct();
-                if(isChecked) {
-                    tempFav = new FavsProduct(MainActivity.loggedInUser.getId(),
-                            currentProduct.getItemId().get(0),
-                            currentProduct.getTitle(0),
-                            currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).get__value__(),
-                            currentProduct.getSellerInfo().get(0).getSellerUsername(0),
-                            currentProduct.getGalleryURL(0),
-                            currentProduct.getCondition().get(0).getConditionDisplayName(0),
-                            currentProduct.getGlobalId().get(0),
-                            SearchFragment.min,
-                            SearchFragment.max,
-                            SearchFragment.keywords,
-                            (currentProduct.getShippingInfo().get(0).getShippingType(0)).equals("Free"));
 
-                    MainActivity.favourites.add(tempFav);
-                    dbHelper.addProductToFavs(tempFav);
-                    Snackbar.make(view, "Checked!",
-                            Snackbar.LENGTH_LONG).show();
+            titleTxt.setText( currentProduct.getTitle( 0 ) );
+            sellerTxt.setText( currentProduct.getSellerInfo().get( 0 ).getSellerUsername( 0 ) );
+            if (currentProduct.getSellingStatus().get( 0 ).getPriceDetails().get( 0 ).getCurrency().equals( "USD" ))
+                currencySign = "$";
+            else if (currentProduct.getSellingStatus().get( 0 ).getPriceDetails().get( 0 ).getCurrency().equals( "EUR" ))
+                currencySign = "\u20ac";
+            else if (currentProduct.getSellingStatus().get( 0 ).getPriceDetails().get( 0 ).getCurrency().equals( "GBP" ))
+                currencySign = "\u00a3";
+            priceTxt.setText( String.valueOf( currentProduct.getSellingStatus().get( 0 ).getPriceDetails().get( 0 ).get__value__() )
+                    + " " + currencySign );
+            Log.d( "Favourites", MainActivity.favourites.toString() );
+            for (FavsProduct fp : MainActivity.favourites) {
+                if (fp.getProductId().equals( currentProduct.getItemId().get( 0 ) )) {
+                    chBox.setChecked( true );
                 }
-                else {
-                    for(FavsProduct fp: MainActivity.favourites) {
-                        if (fp.getProductId().equals(currentProduct.getItemId().get(0))) {
-                            tempFav = fp;
+            }
+            chBox.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    DatabaseHelper dbHelper = new DatabaseHelper( getContext() );
+                    FavsProduct tempFav = new FavsProduct();
+                    if (isChecked) {
+                        tempFav = new FavsProduct( MainActivity.loggedInUser.getId(),
+                                currentProduct.getItemId().get( 0 ),
+                                currentProduct.getTitle( 0 ),
+                                currentProduct.getSellingStatus().get( 0 ).getPriceDetails().get( 0 ).get__value__(),
+                                currentProduct.getSellerInfo().get( 0 ).getSellerUsername( 0 ),
+                                currentProduct.getGalleryURL( 0 ),
+                                currentProduct.getCondition().get( 0 ).getConditionDisplayName( 0 ),
+                                currentProduct.getGlobalId().get( 0 ),
+                                SearchFragment.min,
+                                SearchFragment.max,
+                                SearchFragment.keywords,
+                                (currentProduct.getShippingInfo().get( 0 ).getShippingType( 0 )).equals( "Free" ) );
+
+                        MainActivity.favourites.add( tempFav );
+                        dbHelper.addProductToFavs( tempFav );
+                        Snackbar.make( view, "Checked!",
+                                Snackbar.LENGTH_LONG ).show();
+                    } else {
+                        for (FavsProduct fp : MainActivity.favourites) {
+                            if (fp.getProductId().equals( currentProduct.getItemId().get( 0 ) )) {
+                                tempFav = fp;
+                            }
                         }
+
+                        MainActivity.favourites.remove( tempFav );
+                        dbHelper.deleteProductFromFavs( tempFav );
+                        Snackbar.make( view, "NOT Checked!",
+                                Snackbar.LENGTH_LONG ).show();
                     }
-
-                    MainActivity.favourites.remove(tempFav);
-                    dbHelper.deleteProductFromFavs(tempFav);
-                    Snackbar.make(view,"NOT Checked!",
-                            Snackbar.LENGTH_LONG).show();
                 }
-            }
-        });
-
+            } );
+        }
         return view;
     }
 }

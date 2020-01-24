@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             new FavouritesFragment()).commit();
                     navigationView.setCheckedItem( R.id.nav_favourites );
                 }
-                else if(favouriteFragment.equals("popup")){
+                else if(favouriteFragment.equals("popUp")){
                     getSupportFragmentManager().beginTransaction().replace( R.id.fragment_container,
                             new FavouritesFragment()).commit();
                     navigationView.setCheckedItem( R.id.nav_favourites );
@@ -117,6 +117,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     }
+
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -187,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         }
+
 
     }
 

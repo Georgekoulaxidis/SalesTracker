@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ public class OnBootBroadcastReceiver extends BroadcastReceiver {
             Util util = new Util();
             util.scheduleJob(context);
         }
+
     }
 
     private void debugIntent(Intent intent, String tag) {
@@ -48,7 +50,7 @@ public class OnBootBroadcastReceiver extends BroadcastReceiver {
             ComponentName serviceComponent = new ComponentName(context, FetchProductsService.class);
             JobInfo.Builder builder = new JobInfo.Builder(0, serviceComponent);
             builder.setPersisted(true);
-            builder.setPeriodic(5000);
+            builder.setPeriodic(15*60*1000);
             /*builder.setMinimumLatency(3000);
             builder.setOverrideDeadline(5000);*/
             builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY); // Requires connectivity to network
