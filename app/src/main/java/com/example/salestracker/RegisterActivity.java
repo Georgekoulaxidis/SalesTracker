@@ -2,6 +2,8 @@ package com.example.salestracker;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +17,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.io.ByteArrayOutputStream;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -41,13 +45,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         rootView = findViewById(R.id.scrollView);
 
-        textInputLayoutEmail = findViewById(R.id.txtInputLayoutEmail2);
-        textInputLayoutPassword = findViewById(R.id.txtInputLayoutPassword2);
+        textInputLayoutEmail = findViewById(R.id.txtInputLayoutEmail);
+        textInputLayoutPassword = findViewById(R.id.txtInputLayoutPassword);
         textInputLayoutName = findViewById(R.id.txtInputLayoutName);
         textInputLayoutConfPswd = findViewById(R.id.txtInputLayoutConfPswd);
 
-        textInputEditTextEmail = findViewById(R.id.txtInputEditTextEmail2);
-        textInputEditTextPassword = findViewById(R.id.txtInputEditTextPassword2);
+        textInputEditTextEmail = findViewById(R.id.txtInputEditTextEmail);
+        textInputEditTextPassword = findViewById(R.id.txtInputEditTextPassword);
         textInputEditTextName = findViewById(R.id.txtInputEditTextName);
         textInputEditTextConfPswd = findViewById(R.id.txtInputEditTextConfPswd);
 
@@ -79,6 +83,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         user.setName(textInputEditTextName.getText().toString().trim());
                         user.setEmail(textInputEditTextEmail.getText().toString().trim());
                         user.setPassword(textInputEditTextPassword.getText().toString().trim());
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        BitmapFactory.decodeResource(this.getResources(),
+                                R.drawable.no_image_found).compress(Bitmap.CompressFormat.PNG, 0, stream);
+                        user.setImage(stream.toByteArray());
 
                         dbHelper.addUser(user);
                         Snackbar.make(rootView, "User registered successfully", Snackbar.LENGTH_LONG).show();

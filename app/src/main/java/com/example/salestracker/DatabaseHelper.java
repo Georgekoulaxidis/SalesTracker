@@ -5,8 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_FAVS = "Favourites";
 
     // User Table Columns names
+    private static final String COLUMN_USER_IMAGE = "user_image";
     private static final String COLUMN_USER_ID = "user_id";
     private static final String COLUMN_USER_NAME = "user_name";
     private static final String COLUMN_USER_EMAIL = "user_email";
@@ -45,7 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // create table sql query
     private String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USER + "("
             + COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_USER_NAME + " TEXT,"
-            + COLUMN_USER_EMAIL + " TEXT," + COLUMN_USER_PASSWORD + " TEXT" + ")";
+            + COLUMN_USER_EMAIL + " TEXT," + COLUMN_USER_PASSWORD + " TEXT," + COLUMN_USER_IMAGE + " BLOB" +")";
     // create table favourites sql query
     private String CREATE_FAVS_TABLE = "CREATE TABLE " + TABLE_FAVS + "("
             + COLUMN_USR_ID + " INTEGER," + COLUMN_PRODUCT_ID + " TEXT,"
@@ -106,7 +110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public User checkUser(String email, String password) {
-        String[] columns = {COLUMN_USER_ID, COLUMN_USER_EMAIL, COLUMN_USER_PASSWORD, COLUMN_USER_NAME};
+        String[] columns = {COLUMN_USER_ID, COLUMN_USER_EMAIL, COLUMN_USER_PASSWORD, COLUMN_USER_NAME, COLUMN_USER_IMAGE};
         SQLiteDatabase db = this.getReadableDatabase();
         String selection = COLUMN_USER_EMAIL + " = ?" + " AND " + COLUMN_USER_PASSWORD + " = ?";
         String[] selectionArgs = {email, password};
@@ -128,6 +132,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 user.setEmail(cursor.getString(cursor.getColumnIndex(COLUMN_USER_EMAIL)));
                 user.setPassword(cursor.getString(cursor.getColumnIndex(COLUMN_USER_PASSWORD)));
                 user.setName(cursor.getString(cursor.getColumnIndex(COLUMN_USER_NAME)));
+                user.setImage(cursor.getBlob(cursor.getColumnIndex(COLUMN_USER_IMAGE)));
             }
 
             cursor.close();
@@ -143,6 +148,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_USER_NAME, user.getName());
         values.put(COLUMN_USER_EMAIL, user.getEmail());
         values.put(COLUMN_USER_PASSWORD, user.getPassword());
+        values.put(COLUMN_USER_IMAGE, user.getImage());
 
         // Inserting Row
         long success = db.insert(TABLE_USER, null, values);
@@ -154,6 +160,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
         }
         return false;
+    }
+
+    public void updateUser(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USER_NAME, user.getName());
+        values.put(COLUMN_USER_EMAIL, user.getEmail());
+        values.put(COLUMN_USER_PASSWORD, user.getPassword());
+        values.put(COLUMN_USER_IMAGE, user.getImage());
+
+        // updating row
+        db.update(TABLE_USER, values, COLUMN_USER_ID + " = ?",
+                new String[]{String.valueOf(user.getId())});
+        db.close();
     }
 
     public boolean addProductToFavs(FavsProduct fp) {
