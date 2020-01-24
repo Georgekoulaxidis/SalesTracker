@@ -23,6 +23,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.salestracker.Fragments.AboutFragment;
+import com.example.salestracker.Fragments.FavouritesFragment;
+import com.example.salestracker.Fragments.ProductsFragment;
+import com.example.salestracker.Fragments.SearchFragment;
+import com.example.salestracker.Fragments.UserDetailsFragment;
+import com.example.salestracker.GsonParsing.GsonProduct;
+import com.example.salestracker.Model.User;
+import com.example.salestracker.db.DatabaseHelper;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;

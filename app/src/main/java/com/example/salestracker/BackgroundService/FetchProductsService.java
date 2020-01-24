@@ -1,4 +1,4 @@
-package com.example.salestracker;
+package com.example.salestracker.BackgroundService;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -10,6 +10,10 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.salestracker.ItemRecommendation;
+import com.example.salestracker.MainActivity;
+import com.example.salestracker.R;
+import com.example.salestracker.SingleProduct;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -23,7 +27,7 @@ import java.util.Objects;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-import static com.example.salestracker.NotificationChan.CHANNEL_1_ID;
+import static com.example.salestracker.BackgroundService.NotificationChan.CHANNEL_1_ID;
 
 public class FetchProductsService extends JobService {
 

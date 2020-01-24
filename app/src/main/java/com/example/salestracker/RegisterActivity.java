@@ -14,6 +14,9 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.salestracker.Model.InputValidator;
+import com.example.salestracker.Model.User;
+import com.example.salestracker.db.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;

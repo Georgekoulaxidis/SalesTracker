@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.example.salestracker.GsonParsing.GsonProduct;
+import com.example.salestracker.db.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 import java.util.List;

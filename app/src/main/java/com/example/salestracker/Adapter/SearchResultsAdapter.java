@@ -1,5 +1,5 @@
 
-package com.example.salestracker;
+package com.example.salestracker.Adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -13,15 +13,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.example.salestracker.GsonParsing.GsonProduct;
+import com.example.salestracker.MainActivity;
+import com.example.salestracker.R;
+import com.example.salestracker.db.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -59,12 +61,13 @@ public class SearchResultsAdapter extends ArrayAdapter<GsonProduct.item> {
         String currencySign = "fak";
 
         if(currentProduct != null) {
-            Log.v( "Dennis", currentProduct.getGalleryURL( 0 ) );
+            Log.v("Dennis", currentProduct.getGalleryURL(0));
             Picasso.get()
-                    .load( currentProduct.getGalleryURL( 0 ) )
-                    .resize( 250, 250 )
+                    .load(currentProduct.getGalleryURL(0))
+                    .resize(250, 250)
                     .centerInside()
-                    .into( imageView );
+                    .into(imageView);
+        }
 
         titleTxt.setText(currentProduct.getTitle(0));
         sellerTxt.setText(currentProduct.getSellerInfo().get(0).getSellerUsername(0));

@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ListView;
 
+import com.example.salestracker.GsonParsing.GsonProduct;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;

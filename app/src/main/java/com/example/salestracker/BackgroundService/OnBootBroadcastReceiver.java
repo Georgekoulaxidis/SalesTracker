@@ -1,4 +1,4 @@
-package com.example.salestracker;
+package com.example.salestracker.BackgroundService;
 
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -6,10 +6,11 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.example.salestracker.BackgroundService.FetchProductsService;
 
 public class OnBootBroadcastReceiver extends BroadcastReceiver {
     private static final String TAG_CON_BROADCAST_RECEIVER = "BootReceiver";

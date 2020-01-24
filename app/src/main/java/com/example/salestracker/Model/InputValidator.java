@@ -1,4 +1,4 @@
-package com.example.salestracker;
+package com.example.salestracker.Model;
 
 import android.app.Activity;
 import android.content.Context;
