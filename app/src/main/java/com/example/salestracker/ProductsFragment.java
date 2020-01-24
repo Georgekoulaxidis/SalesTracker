@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -27,17 +28,11 @@ import java.util.ArrayList;
 public class ProductsFragment extends Fragment {
 
     private ArrayList<GsonProduct.item> itemList =  new ArrayList<>();
-    private static WeakReference<Activity> mActivityRef;
     private static ListView listProducts;
-
-    public static void updateActivity(Activity activity){
-        mActivityRef = new WeakReference<Activity>(activity);
-    }
 
     public ProductsFragment() {
 
     }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -49,10 +44,19 @@ public class ProductsFragment extends Fragment {
         }
         Log.d("Dennis", String.valueOf( itemList) );
 
+        Gson gson = new Gson();
+        String json = gson.toJson(itemList.get(0));
+        System.out.println("json = " + json);
+        GsonProduct.item product = gson.fromJson(json, GsonProduct.item.class);
+        System.out.println(product.getItemId().get(0));
 
+        TextView titleResult = view.findViewById( R.id.titleResult);
         if(itemList.size() != 0) {
+            titleResult.setText("Products Result");
+
             listProducts = view.findViewById( R.id.productsList );
-            final SearchResultsAdapter myAdapter = new SearchResultsAdapter( mActivityRef.get(), R.layout.custom_row, itemList );
+            final SearchResultsAdapter myAdapter = new SearchResultsAdapter( getActivity(), R.layout.custom_row, itemList );
+            myAdapter.setFavs(false);
             listProducts.setAdapter( myAdapter );
             listProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -62,7 +66,6 @@ public class ProductsFragment extends Fragment {
             });
             registerForContextMenu(listProducts);
         }else{
-            TextView titleResult = view.findViewById( R.id.titleResult);
             titleResult.setText("We didn't find any product");
         }
 
@@ -81,18 +84,7 @@ public class ProductsFragment extends Fragment {
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         DatabaseHelper dbHelper = new DatabaseHelper(getActivity().getBaseContext());
-        FavsProduct fp = new FavsProduct();
-        fp.setUserId(MainActivity.loggedInUser.getId());
-        fp.setProductId(itemList.get(info.position).getItemId().get(0));
-        fp.setProductTitle(itemList.get(info.position).getTitle(0));
-        fp.setProductSeller(itemList.get(info.position).getSellerInfo().get(0).getSellerUsername(0));
-        fp.setProductPrice(itemList.get(info.position).getSellingStatus().get(0).getPriceDetails().get(0).get__value__());
-        fp.setProductUrl(itemList.get(info.position).getGalleryURL(0));
-        fp.setCondition(itemList.get(info.position).getCondition().get(0).getConditionDisplayName(0));
-        fp.setMinPrice(SearchFragment.min);
-        fp.setMaxPrice(SearchFragment.max);
-        fp.setSearchKeyword(SearchFragment.keywords);
-        fp.setFreeShipping(itemList.get(info.position).getShippingInfo().get(0).getShippingType(0).equals("Free"));
+        GsonProduct.item fp = itemList.get(info.position);
 
         switch(item.getItemId()) {
             case R.id.context_add:
@@ -101,13 +93,13 @@ public class ProductsFragment extends Fragment {
                             Snackbar.LENGTH_LONG).show();
                 }
                 else {
-                    dbHelper.addProductToFavs(fp);
+                    dbHelper.addProductToFavs(MainActivity.loggedInUser.getId(), fp);
                     MainActivity.favourites.add(fp);
                 }
                 break;
             case R.id.context_delete:
                 if(((CheckBox)listProducts.getChildAt(info.position).findViewById(R.id.favsCheckBox)).isChecked()) {
-                    dbHelper.deleteProductFromFavs(fp);
+                    dbHelper.deleteProductFromFavs(MainActivity.loggedInUser.getId(), fp.getItemId().get(0));
                     MainActivity.favourites.remove(fp);
                 }
                 else {

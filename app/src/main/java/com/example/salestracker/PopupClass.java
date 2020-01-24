@@ -25,8 +25,6 @@ public class PopupClass {
         LayoutInflater inflater = (LayoutInflater) view.getContext().getSystemService(view.getContext().LAYOUT_INFLATER_SERVICE);
 
         final View popupView = inflater.inflate(R.layout.popup_layout, null);
-        //int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        //int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         Display display = view.getDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -62,8 +60,8 @@ public class PopupClass {
 
         CheckBox favCheckBox = popupView.findViewById(R.id.checkBox);
         Log.d("Favourites", MainActivity.favourites.toString());
-        for(FavsProduct fp: MainActivity.favourites) {
-            if(fp.getProductId().equals(currentProduct.getItemId().get(0))) {
+        for(GsonProduct.item fp: MainActivity.favourites) {
+            if(fp.getItemId().get(0).equals(currentProduct.getItemId().get(0))) {
                 favCheckBox.setChecked(true);
             }
         }
@@ -71,38 +69,24 @@ public class PopupClass {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 DatabaseHelper dbHelper = new DatabaseHelper(popupView.getContext());
-                FavsProduct tempFav = new FavsProduct();
                 if(isChecked) {
-                    tempFav = new FavsProduct(MainActivity.loggedInUser.getId(),
-                            currentProduct.getItemId().get(0),
-                            currentProduct.getTitle(0),
-                            currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).get__value__(),
-                            currentProduct.getSellerInfo().get(0).getSellerUsername(0),
-                            currentProduct.getGalleryURL(0),
-                            currentProduct.getCondition().get(0).getConditionDisplayName(0),
-                            currentProduct.getGlobalId().get(0),
-                            SearchFragment.min,
-                            SearchFragment.max,
-                            SearchFragment.keywords,
-                            (currentProduct.getShippingInfo().get(0).getShippingType(0)).equals("Free"));
-
-                    MainActivity.favourites.add(tempFav);
-                    dbHelper.addProductToFavs(tempFav);
+                    MainActivity.favourites.add(currentProduct);
+                    dbHelper.addProductToFavs(MainActivity.loggedInUser.getId(), currentProduct);
                     Snackbar.make(popupView, "Product add in Favourites list!",
                             Snackbar.LENGTH_LONG).show();
                 }
                 else {
-                    for(FavsProduct fp: MainActivity.favourites) {
-                        if(fp.getProductId().equals(currentProduct.getItemId().get(0))) {
-                            tempFav = fp;
+                    for(GsonProduct.item fp: MainActivity.favourites) {
+                        if(fp.getItemId().get(0).equals(currentProduct.getItemId().get(0))) {
+                            MainActivity.favourites.remove(currentProduct);
+                            dbHelper.deleteProductFromFavs(MainActivity.loggedInUser.getId(), currentProduct.getItemId().get(0));
                         }
                     }
 
-                    MainActivity.favourites.remove(tempFav);
-                    dbHelper.deleteProductFromFavs(tempFav);
                     Snackbar.make(popupView,"Product deleted from Favourites List!",
                             Snackbar.LENGTH_LONG).show();
                 }
+                adapter.notifyDataSetChanged();
             }
         });
 

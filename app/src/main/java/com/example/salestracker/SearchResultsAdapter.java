@@ -31,6 +31,7 @@ public class SearchResultsAdapter extends ArrayAdapter<GsonProduct.item> {
     private final LayoutInflater inflater;
     private final int layoutResource;
     private List<GsonProduct.item> products;
+    private boolean favs;
 
     public SearchResultsAdapter(@NonNull Context context, int resource, @NonNull List<GsonProduct.item> products) {
         super( context, resource, products);
@@ -67,50 +68,44 @@ public class SearchResultsAdapter extends ArrayAdapter<GsonProduct.item> {
         priceTxt.setText( String.valueOf(currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).get__value__())
                             + " " + currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).getCurrency());
         Log.d("Favourites", MainActivity.favourites.toString());
-        for(FavsProduct fp: MainActivity.favourites) {
-            if(fp.getProductId().equals(currentProduct.getItemId().get(0))) {
-                chBox.setChecked(true);
-            }
+        if(favs){
+            chBox.setVisibility(View.INVISIBLE);
         }
-        chBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                DatabaseHelper dbHelper = new DatabaseHelper(getContext());
-                FavsProduct tempFav = new FavsProduct();
-                if(isChecked) {
-                    tempFav = new FavsProduct(MainActivity.loggedInUser.getId(),
-                            currentProduct.getItemId().get(0),
-                            currentProduct.getTitle(0),
-                            currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).get__value__(),
-                            currentProduct.getSellerInfo().get(0).getSellerUsername(0),
-                            currentProduct.getGalleryURL(0),
-                            currentProduct.getCondition().get(0).getConditionDisplayName(0),
-                            currentProduct.getGlobalId().get(0),
-                            SearchFragment.min,
-                            SearchFragment.max,
-                            SearchFragment.keywords,
-                            (currentProduct.getShippingInfo().get(0).getShippingType(0)).equals("Free"));
-
-                    MainActivity.favourites.add(tempFav);
-                    dbHelper.addProductToFavs(tempFav);
-                    Snackbar.make(view, "Checked!",
-                            Snackbar.LENGTH_LONG).show();
-                }
-                else {
-                    for(FavsProduct fp: MainActivity.favourites) {
-                        if (fp.getProductId().equals(currentProduct.getItemId().get(0))) {
-                            tempFav = fp;
-                        }
-                    }
-
-                    MainActivity.favourites.remove(tempFav);
-                    dbHelper.deleteProductFromFavs(tempFav);
-                    Snackbar.make(view,"NOT Checked!",
-                            Snackbar.LENGTH_LONG).show();
+        else {
+            for(GsonProduct.item fp: MainActivity.favourites) {
+                if(fp.getItemId().get(0).equals(currentProduct.getItemId().get(0))) {
+                    chBox.setChecked(true);
                 }
             }
-        });
+            chBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                    DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+                    if(isChecked) {
+                        MainActivity.favourites.add(currentProduct);
+                        dbHelper.addProductToFavs(MainActivity.loggedInUser.getId(), currentProduct);
+                        Snackbar.make(view, "Checked!",
+                                Snackbar.LENGTH_LONG).show();
+                    }
+                    else {
+                        for(GsonProduct.item fp: MainActivity.favourites) {
+                            if (fp.getItemId().get(0).equals(currentProduct.getItemId().get(0))) {
+                                MainActivity.favourites.remove(currentProduct);
+                                dbHelper.deleteProductFromFavs(MainActivity.loggedInUser.getId(), currentProduct.getItemId().get(0));
+                            }
+                        }
+
+                        Snackbar.make(view,"NOT Checked!",
+                                Snackbar.LENGTH_LONG).show();
+                    }
+                }
+            });
+        }
 
         return view;
+    }
+
+    public void setFavs(boolean favs) {
+        this.favs = favs;
     }
 }

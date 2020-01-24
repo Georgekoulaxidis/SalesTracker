@@ -32,7 +32,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private DatabaseHelper dbHelper;
     public static User loggedInUser;
-    public static List<FavsProduct> favourites;
+    //public static List<FavsProduct> favourites;
+    public static List<GsonProduct.item> favourites;
 
     public static Context getContext() {
         return context;
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void loadDrawersContent (NavigationView navigationView) {
         LinearLayout headerView = (LinearLayout) navigationView.getHeaderView(0);
         ImageView usrImgView = headerView.findViewById(R.id.usrImgView);
+
         usrImgView.setImageBitmap(BitmapFactory.decodeByteArray(MainActivity
                 .loggedInUser.getImage(), 0, MainActivity.loggedInUser.getImage().length));
         TextView userName = headerView.findViewById(R.id.userNameTxt);
@@ -188,7 +190,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void ReceiveJson(ArrayList<GsonProduct.item> itemList){
         Log.v("Dennis", String.valueOf(itemList));
         Bundle bundle = new Bundle();
-        ProductsFragment.updateActivity(this);
         if(itemList != null)
             bundle.putParcelableArrayList("Json", itemList);
 
