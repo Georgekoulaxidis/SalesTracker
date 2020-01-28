@@ -6,19 +6,19 @@ import java.util.List;
 
 public class ItemRecommendation {
 
-    private List<ItemResponse> getSimilarItemsResponse;
+    private ItemResponse getSimilarItemsResponse;
 
-    public List<ItemResponse> getGetSimilarItemsResponse() {
+    public ItemResponse getGetSimilarItemsResponse() {
         return getSimilarItemsResponse;
     }
 
-    public void setGetSimilarItemsResponse(List<ItemResponse> getSimilarItemsResponse) {
+    public void setGetSimilarItemsResponse(ItemResponse getSimilarItemsResponse) {
         this.getSimilarItemsResponse = getSimilarItemsResponse;
     }
 
     public class ItemResponse {
         private String ack;
-        private List<ObjectItem> itemRecommendation;
+        private ObjectItem itemRecommendations;
 
         public String getAck() {
             return ack;
@@ -28,12 +28,12 @@ public class ItemRecommendation {
             this.ack = ack;
         }
 
-        public List<ObjectItem> getItemRecommendation() {
-            return itemRecommendation;
+        public ObjectItem getItemRecommendations() {
+            return itemRecommendations;
         }
 
-        public void setItemRecommendation(List<ObjectItem> itemRecommendation) {
-            this.itemRecommendation = itemRecommendation;
+        public void setItemRecommendations(ObjectItem itemRecommendations) {
+            this.itemRecommendations = itemRecommendations;
         }
     }
 
@@ -55,8 +55,8 @@ public class ItemRecommendation {
         private String title;
         private String viewItemURL;
         private String globalId;
-
-        private List<PriceDetails> currentPrice;
+        private PriceDetails currentPrice;
+        private BuyItNow buyItNowPrice;
 
         public String getItemId() {
             return itemId;
@@ -90,19 +90,29 @@ public class ItemRecommendation {
             this.globalId = globalId;
         }
 
-        public List<PriceDetails> getCurrentPrice() {
+        public PriceDetails getCurrentPrice() {
             return currentPrice;
         }
 
-        public void setCurrentPrice(List<PriceDetails> currentPrice) {
+        public void setCurrentPrice(PriceDetails currentPrice) {
             this.currentPrice = currentPrice;
+        }
+
+        public BuyItNow getBuyItNowPrice() {
+            return buyItNowPrice;
+        }
+
+        public void setBuyItNowPrice(BuyItNow buyItNowPrice) {
+            this.buyItNowPrice = buyItNowPrice;
         }
     }
 
     public class PriceDetails{
         @SerializedName("@currencyId")
         private String currency;
-        private double __value__;
+
+        @SerializedName("__value__")
+        private String __value__;
 
         public String getCurrency() {
             return currency;
@@ -112,12 +122,38 @@ public class ItemRecommendation {
             this.currency = currency;
         }
 
-        public double get__value__() {
+        public String get__value__() {
             return __value__;
         }
 
-        public void set__value__(double __value__) {
+        public void set__value__(String __value__) {
             this.__value__ = __value__;
         }
     }
+
+    public class BuyItNow{
+        @SerializedName("@currencyId")
+        private String currency;
+
+        @SerializedName("__value__")
+        private String __value__;
+
+        public String getCurrency() {
+            return currency;
+        }
+
+        public void setCurrency(String currency) {
+            this.currency = currency;
+        }
+
+        public String get__value__() {
+            return __value__;
+        }
+
+        public void set__value__(String __value__) {
+            this.__value__ = __value__;
+        }
+    }
+
+
 }

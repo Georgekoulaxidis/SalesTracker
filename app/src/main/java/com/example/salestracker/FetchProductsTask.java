@@ -82,10 +82,6 @@ public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.
             String keywordsParam = "keywords";
             String outputSelectorParam = "outputSelector";
             String pages = "paginationInput.entriesPerPage";
-            //String filterName = "itemFilter.name";
-            //String filterValue = "itemFilter.value";
-            //String paramName = "itemFilter.paramName";
-            //String paramValue = "itemFilter.paramValue";
 
 
             Uri builtUri = Uri.parse(basicUrl).buildUpon()

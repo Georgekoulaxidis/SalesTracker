@@ -28,19 +28,18 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import static com.example.salestracker.BackgroundService.NotificationChan.CHANNEL_1_ID;
+import static com.example.salestracker.MainActivity.favourites;
 
 public class FetchProductsService extends JobService {
 
     private final String LOG_TAG = "Dennis";
     private String keyword;
-    private String title = "Apple iPhone 5s 16GB Factory Unlocked SRF A1586";
-    private double currentPrice = 150.00;
-    private String payment;
-    private String freeShipping;
+    //private String title = "Apple iPhone 5s 16GB Factory Unlocked SRF A1586";
+    //private double currentPrice = 50.00;
     private SingleProduct product;
     private ItemRecommendation recProduct;
     private String jsonString;
-    private String code = "283492091677";
+    //private String code = "283492091677";
     private String globalId = "0";
 
 
@@ -60,45 +59,52 @@ public class FetchProductsService extends JobService {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                int action = 0;
-                CheckAvaialability(code, action);
-                if(product.getAck().equals("Failure") || !product.getItem().getTitle().equals(title)){
+                for (int i=0; i < favourites.size(); i++) {
+                    int action = 0;
+                    String code = favourites.get(i).getItemId().get(0);
+                    CheckAvailability( code, action );
+                    if (product.getAck().equals( "Failure" ) || !product.getItem().getTitle().equals( favourites.get(i).getTitle(0) )) {
 
-                    //Product doesn't exist anymore! (RIP you should have order it earlier)
-                    BuildNotification(getApplicationContext(),"Product out of stock", title + " has gone out of stock", action);
-                }else if(product.getItem().getConvertedCurrentPrice().getValue() < currentPrice){
-                    //Notification to inform the user about the price drop.
-                    BuildNotification(getApplicationContext(),"Price dropped", title + " price has dropped", action);
+                        //Product doesn't exist anymore! (RIP you should have order it earlier)
+                        BuildNotification( getApplicationContext(), "Product out of stock", favourites.get(i).getTitle(0) + " has gone out of stock", action );
+                    } else if (product.getItem().getConvertedCurrentPrice().getValue() < favourites.get(i).getSellingStatus().get(0).getPriceDetails().get(0).get__value__()) {
+                        //Notification to inform the user about the price drop.
+                        BuildNotification( getApplicationContext(), "Price dropped", favourites.get(i).getTitle(0) + " price has dropped", action );
 
-                }
-                else{
-                    action = 1;
-                    //CheckAvaialability(code, action);
-                    ItemRecommendation item = CheckSimilar(code);
-                    Log.d( "JOJO", String.valueOf(recProduct));
-                    if(item.getGetSimilarItemsResponse().get(0).getAck().equals("Success")) {
-                        if(item.getGetSimilarItemsResponse().get(0).getItemRecommendation().size() != 0) {
-                            if(item.getGetSimilarItemsResponse().get(0).getItemRecommendation().get(0).getItem().get(0).getCurrentPrice().get(0).get__value__() < currentPrice)
-                                BuildNotification( FetchProductsService.this, "Similar Product", "There's a new product similar to the one that you have in your list" , action);
-                            else
-                                Log.v("Dennis", "There is not a cheaper similar product");
-                        }
-                        else
-                            Log.v("Dennis", "List with similar products is empty");
+                    } else {
+                        action = 1;
+                        //CheckAvaialability(code, action);
+                        ItemRecommendation item = CheckSimilar( code );
+                        Log.d( "JOJO", String.valueOf( recProduct.getGetSimilarItemsResponse().getItemRecommendations().getItem().get( 0 ).getTitle() ) );
+                        if (recProduct.getGetSimilarItemsResponse().getAck().equals( "Success" )) {
+                            if (recProduct.getGetSimilarItemsResponse().getItemRecommendations().getItem().size() != 0) {
+                                if (recProduct.getGetSimilarItemsResponse().getItemRecommendations().getItem().get( 0 ).getCurrentPrice() == null) {
+                                    if (recProduct.getGetSimilarItemsResponse().getItemRecommendations().getItem().get( 0 ).getBuyItNowPrice() != null ||
+                                            !recProduct.getGetSimilarItemsResponse().getItemRecommendations().getItem().get( 0 ).getBuyItNowPrice().get__value__().equals( "0.0" ) &&
+                                                    Double.parseDouble( recProduct.getGetSimilarItemsResponse().getItemRecommendations().getItem().get( 0 ).getBuyItNowPrice().get__value__() ) < favourites.get(i).getSellingStatus().get(0).getPriceDetails().get(0).get__value__())
+                                        BuildNotification( FetchProductsService.this, "Similar Product", "There's a new product similar to the one that you have in your list", action );
+                                    else
+                                        Log.v( "Dennis", "Buy it now is null or 0.0 or bigger than current price" );
+                                } else if (Double.parseDouble( recProduct.getGetSimilarItemsResponse().getItemRecommendations().getItem().get( 0 ).getCurrentPrice().get__value__() ) < favourites.get(i).getSellingStatus().get(0).getPriceDetails().get(0).get__value__()) {
+                                    BuildNotification( FetchProductsService.this, "Similar Product", "There's a new product similar to the one that you have in your list", action );
+                                } else
+                                    Log.v( "Dennis", "There is not a cheaper similar product" );
+                            } else
+                                Log.v( "Dennis", "List with similar products is empty" );
+
+                        } else
+                            Log.d( "JOJO", "Failed Similar Products" );
 
                     }
-                    else
-                        Log.d( "JOJO", "Failed Similar Products");
 
+                    Log.d( "BootReceiver", "Thread running" );
+                    jobFinished( params, false );
                 }
-
-                Log.d("BootReceiver", "Thread running");
-                jobFinished(params, false);
             }
         }).start();
     }
 
-    public void CheckAvaialability(String code, int action){
+    public void CheckAvailability(String code, int action){
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
 
@@ -230,10 +236,10 @@ public class FetchProductsService extends JobService {
             String results = "maxResults";
 
             Uri builtUri = Uri.parse( basicUrl ).buildUpon()
-                    .appendQueryParameter( operation, "getSimilarItems" )
-                    .appendQueryParameter( servName, "MerchandisingService" )
-                    .appendQueryParameter( version, "1.1.0" )
-                    .appendQueryParameter( appid, "Dionisis-SmartSho-PRD-0388a6d5f-56b83621" )
+                    .appendQueryParameter(operation, "getSimilarItems" )
+                    .appendQueryParameter(servName, "MerchandisingService" )
+                    .appendQueryParameter(version, "1.1.0" )
+                    .appendQueryParameter(appid, "Dionisis-SmartSho-PRD-0388a6d5f-56b83621" )
                     .appendQueryParameter(dataType, "JSON")
                     .appendQueryParameter(payload, "")
                     .appendQueryParameter( itemId, code)
@@ -289,7 +295,7 @@ public class FetchProductsService extends JobService {
             }
         }
 
-
+        Log.v( "Look at me", String.valueOf( recProduct.getGetSimilarItemsResponse().getItemRecommendations().getItem().get(0).getTitle() ));
         return recProduct;
     }
 
@@ -319,9 +325,6 @@ public class FetchProductsService extends JobService {
         notificationManager.notify(1, notification);
     }
 
-    public void setProduct(SingleProduct item){
-        product = item;
-    }
 
     @Override
     public boolean onStopJob(JobParameters params) {

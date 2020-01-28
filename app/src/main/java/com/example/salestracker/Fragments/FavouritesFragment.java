@@ -10,17 +10,17 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
+import com.example.salestracker.Adapter.SearchResultsAdapter;
 import com.example.salestracker.GsonParsing.GsonProduct;
 import com.example.salestracker.MainActivity;
 import com.example.salestracker.PopupClass;
 import com.example.salestracker.R;
-import com.example.salestracker.Adapter.SearchResultsAdapter;
 import com.example.salestracker.db.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 public class FavouritesFragment extends Fragment {
 

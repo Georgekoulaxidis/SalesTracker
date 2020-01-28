@@ -12,17 +12,17 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import com.example.salestracker.FetchProductsTask;
+import com.example.salestracker.GsonParsing.GsonProduct;
+import com.example.salestracker.MainActivity;
+import com.example.salestracker.R;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import com.example.salestracker.FetchProductsTask;
-import com.example.salestracker.GsonParsing.GsonProduct;
-import com.example.salestracker.MainActivity;
-import com.example.salestracker.R;
 
 public class SearchFragment extends Fragment {
 
