@@ -1,10 +1,12 @@
 package com.example.salestracker.Fragments;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -14,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -42,6 +43,8 @@ public class ProductsFragment extends Fragment {
     private String numberOfPages;
     private SearchResultsAdapter myAdapter;
 
+    private View footerView;
+    private LinearLayout ll;
     private Button[] btns;
 
     public ProductsFragment(String numberOfPages) {
@@ -72,26 +75,46 @@ public class ProductsFragment extends Fragment {
             });
         registerForContextMenu(listProducts);
 
-        ConstructFooterView();
+        footerView = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.listview_footer_layout, null, false);
+        ll = footerView.findViewById(R.id.btnLay);
+        btns = new Button[Integer.parseInt(numberOfPages)];
+
+        btns[0] = new Button(getActivity());
+        btns[0].setBackgroundResource(R.drawable.round_button);
+        btns[0].setText(""+1);
+        ll.addView(btns[0]);
+        btns[0].setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v)
+            {
+                loadListOfProducts(1);
+                for(int k = 0; k < btns.length; k++) {
+                    if (btns[k] != null) {
+                        if (k == 0)
+                            btns[k].setPressed(true);
+                        else
+                            btns[k].setPressed(false);
+                    }
+                    else {
+                        break;
+                    }
+                }
+            }
+        });
+        btns[0].setPressed(true);
+
+        footerView = ConstructFooterView();
+        listProducts.addFooterView(footerView);
 
         return view;
     }
 
-    private void ConstructFooterView()
-    {
-        View footerView = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.listview_footer_layout, null, false);
-        LinearLayout ll = footerView.findViewById(R.id.btnLay);
-
-        btns = new Button[Integer.parseInt(numberOfPages)];
-
-        for(int i = 0; i < btns.length; i++)
-        {
+    private View ConstructFooterView() {
+        for(int i = Integer.parseInt(pageNumber); i < ((Integer.parseInt(pageNumber)+5>=Integer.parseInt(numberOfPages))?
+                Integer.parseInt(numberOfPages) : 5+Integer.parseInt(pageNumber)); i++) {
             btns[i] = new Button(getActivity());
-            //btns[i].getBackground().setAlpha(0);
             btns[i].setBackgroundResource(R.drawable.round_button);
             btns[i].setText(""+(i+1));
-
-            ll.addView(btns[i]);
 
             final int j = i;
             btns[j].setOnClickListener(new View.OnClickListener() {
@@ -100,18 +123,27 @@ public class ProductsFragment extends Fragment {
                 {
                     loadListOfProducts(j+1);
                     for(int k = 0; k < btns.length; k++) {
-                        if(k==j)
-                            btns[k].setPressed(true);
-                        else
-                            btns[k].setPressed(false);
+                        if (btns[k] != null) {
+                            if (k == j)
+                                btns[k].setPressed(true);
+                            else
+                                btns[k].setPressed(false);
+                        }
+                        else {
+                            break;
+                        }
                     }
                 }
             });
+
+            ll.addView(btns[i]);
+
+            if(pageNumber.equals("1"))
+                ll.removeView(btns[5]);
+
         }
 
-        btns[0].setPressed(true);
-        listProducts.addFooterView(footerView);
-
+        return footerView;
     }
 
     private void loadListOfProducts(int pageNumber) {
@@ -129,6 +161,10 @@ public class ProductsFragment extends Fragment {
 
         this.pageNumber = String.valueOf(pageNumber);
         titleResult.setText("Products Result(Page " + pageNumber + " of " + numberOfPages + ")");
+        if (pageNumber % 5 == 0) {
+            listProducts.removeFooterView(footerView);
+            listProducts.addFooterView(ConstructFooterView());
+        }
     }
 
     @Override

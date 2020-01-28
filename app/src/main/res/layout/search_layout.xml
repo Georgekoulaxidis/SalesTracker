@@ -14,7 +14,7 @@
         android:layout_marginTop="40dp"
         android:layout_marginEnd="20dp"
         android:fontFamily="sans-serif"
-        android:text="Search for your favourite product"
+        android:text="Search for your favourite product:"
         android:textAlignment="viewStart"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="18sp"
