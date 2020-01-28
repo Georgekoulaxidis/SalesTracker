@@ -1,6 +1,7 @@
 package com.example.salestracker.Fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +23,15 @@ import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+
+import com.example.salestracker.FetchProductsTask;
+import com.example.salestracker.GsonParsing.GsonProduct;
+import com.example.salestracker.MainActivity;
+import com.example.salestracker.R;
+
+import org.json.JSONException;
 
 public class SearchFragment extends Fragment {
 
@@ -38,17 +47,15 @@ public class SearchFragment extends Fragment {
     private String newProduct;
     private String usedProduct;
     private boolean freeShipping = false;
-    private boolean payment = false;
     private String country = new String();
 
-    public static String keywords = new String();
-    public static String min = new String();
-    public static String max = new String();
+    private String keywords = new String();
+    private String min = new String();
+    private String max = new String();
+    private final int INITIAL_PAGE_NUMBER = 1;
 
     private FetchProductsTask task;
     private ArrayList<GsonProduct.item> item = new ArrayList<>();
-
-    //private OnFragmentInteractionListener mListener;
 
     @Nullable
     @Override
@@ -68,47 +75,64 @@ public class SearchFragment extends Fragment {
         searchBtn.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                keywords = searchPlain.getText().toString(); //Take input from user
-                if (newBox.isChecked() && !usedBox.isChecked()) {
-                    usedProduct = "1000";
-                    newProduct = "1000";
-                }
-                else if(!newBox.isChecked() && usedBox.isChecked()) {
-                    usedProduct = "3000";
-                    newProduct = "3000";
-                }
-                else if(newBox.isChecked() && usedBox.isChecked()){
-                    usedProduct = "3000";
-                    newProduct = "1000";
+                if(!searchPlain.getText().toString().equals("")) {
+                    keywords = searchPlain.getText().toString(); //Take input from user
+                    if (newBox.isChecked() && !usedBox.isChecked()) {
+                        usedProduct = "1000";
+                        newProduct = "1000";
+                    }
+                    else if(!newBox.isChecked() && usedBox.isChecked()) {
+                        usedProduct = "3000";
+                        newProduct = "3000";
+                    }
+                    else if(newBox.isChecked() && usedBox.isChecked()){
+                        usedProduct = "3000";
+                        newProduct = "1000";
+                    }
+                    else {
+                        newProduct = "New";
+                        usedProduct = "Used";
+                    }
+
+                    Log.d( "Dennis", newProduct);
+                    freeShipping = freeShippingBox.isChecked();
+                    min = minPlain.getText().toString();
+                    if(min.isEmpty())
+                        min = "0.0";
+                    max = maxPlain.getText().toString();
+                    if(max.isEmpty())
+                        max = "999999999999999.0";
+                    if(currencySpinner.getSelectedItem().equals("USA")){
+                        country = "EBAY-US";
+                    }
+                    else if(currencySpinner.getSelectedItem().equals("DEU"))
+                        country = "EBAY-DE";
+                    else if(currencySpinner.getSelectedItem().equals("UK"))
+                        country = "EBAY-GB";
+
+                    MainActivity mHelper = (MainActivity) getActivity();
+
+                    item = GetJson();
+                    final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+                    try {
+                        mHelper.ReceiveJson(item, task.getNumberOfPages());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else {
-                    newProduct = "New";
-                    usedProduct = "Used";
+                    AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+                    alertDialog.setTitle("Alert");
+                    alertDialog.setMessage("Insert a search keyword!");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
                 }
-
-                Log.d( "Dennis", newProduct);
-                freeShipping = freeShippingBox.isChecked();
-                payment = paymentBox.isChecked();
-                min = minPlain.getText().toString();
-                if(min.isEmpty())
-                    min = "0.0";
-                max = maxPlain.getText().toString();
-                if(max.isEmpty())
-                    max = "999999999999999.0";
-                 if(currencySpinner.getSelectedItem().equals("USA")){
-                     country = "EBAY-US";
-                 }
-                 else if(currencySpinner.getSelectedItem().equals("DEU"))
-                    country = "EBAY-DE";
-                 else if(currencySpinner.getSelectedItem().equals("UK"))
-                     country = "EBAY-GB";
-
-                MainActivity mHelper = (MainActivity) getActivity();
-
-                item = GetJson();
-                final InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-                mHelper.ReceiveJson( item );
             }
         } );
 
@@ -118,7 +142,7 @@ public class SearchFragment extends Fragment {
 
 
     public ArrayList<GsonProduct.item> GetJson() {
-        task = new FetchProductsTask(getActivity(), keywords, newProduct, usedProduct, freeShipping, payment, min, max, country);
+        task = new FetchProductsTask(getActivity(), keywords, newProduct, usedProduct, freeShipping, min, max, country, INITIAL_PAGE_NUMBER);
         try {
             if(task!= null)
                 return (ArrayList<GsonProduct.item>) task.execute().get();

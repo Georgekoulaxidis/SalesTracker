@@ -8,8 +8,9 @@
     <LinearLayout
         android:id="@+id/listLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/titleResult"
@@ -26,6 +27,8 @@
         <ListView
             android:id="@+id/productsList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

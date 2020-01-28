@@ -1,8 +1,10 @@
 package com.example.salestracker.Fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -12,10 +14,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.salestracker.FetchProductsTask;
 import com.example.salestracker.GsonParsing.GsonProduct;
 import com.example.salestracker.MainActivity;
 import com.example.salestracker.PopupClass;
@@ -25,14 +31,21 @@ import com.example.salestracker.db.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class ProductsFragment extends Fragment {
 
     private ArrayList<GsonProduct.item> itemList =  new ArrayList<>();
+    private TextView titleResult;
     private static ListView listProducts;
+    private String pageNumber = "1";
+    private String numberOfPages;
+    private SearchResultsAdapter myAdapter;
 
-    public ProductsFragment() {
+    private Button[] btns;
 
+    public ProductsFragment(String numberOfPages) {
+        this.numberOfPages = numberOfPages;
     }
 
     @Override
@@ -45,11 +58,11 @@ public class ProductsFragment extends Fragment {
         }
         Log.d("Dennis", String.valueOf(itemList) );
 
-        TextView titleResult = view.findViewById( R.id.titleResult);
-        titleResult.setText("Products Result");
+        titleResult = view.findViewById( R.id.titleResult);
+        titleResult.setText("Products Result(Page " + pageNumber + " of " + numberOfPages + ")");
 
         listProducts = view.findViewById( R.id.productsList );
-        final SearchResultsAdapter myAdapter = new SearchResultsAdapter( getActivity(), R.layout.custom_row, itemList );
+        myAdapter = new SearchResultsAdapter( getActivity(), R.layout.custom_row, itemList );
         myAdapter.setFavs(false);
         listProducts.setAdapter( myAdapter );
         listProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -59,7 +72,63 @@ public class ProductsFragment extends Fragment {
             });
         registerForContextMenu(listProducts);
 
+        ConstructFooterView();
+
         return view;
+    }
+
+    private void ConstructFooterView()
+    {
+        View footerView = ((LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.listview_footer_layout, null, false);
+        LinearLayout ll = footerView.findViewById(R.id.btnLay);
+
+        btns = new Button[Integer.parseInt(numberOfPages)];
+
+        for(int i = 0; i < btns.length; i++)
+        {
+            btns[i] = new Button(getActivity());
+            //btns[i].getBackground().setAlpha(0);
+            btns[i].setBackgroundResource(R.drawable.round_button);
+            btns[i].setText(""+(i+1));
+
+            ll.addView(btns[i]);
+
+            final int j = i;
+            btns[j].setOnClickListener(new View.OnClickListener() {
+
+                public void onClick(View v)
+                {
+                    loadListOfProducts(j+1);
+                    for(int k = 0; k < btns.length; k++) {
+                        if(k==j)
+                            btns[k].setPressed(true);
+                        else
+                            btns[k].setPressed(false);
+                    }
+                }
+            });
+        }
+
+        btns[0].setPressed(true);
+        listProducts.addFooterView(footerView);
+
+    }
+
+    private void loadListOfProducts(int pageNumber) {
+        FetchProductsTask task = new FetchProductsTask(getActivity(), FetchProductsTask.keyword, FetchProductsTask.newProduct,
+                FetchProductsTask.usedProduct, Boolean.parseBoolean(FetchProductsTask.freeShipping), FetchProductsTask.min, FetchProductsTask.max,
+                FetchProductsTask.country, pageNumber);
+        try {
+            itemList = (ArrayList<GsonProduct.item>) task.execute().get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        myAdapter = new SearchResultsAdapter(getActivity(), R.layout.custom_row, itemList);
+        listProducts.setAdapter(myAdapter);
+
+        this.pageNumber = String.valueOf(pageNumber);
+        titleResult.setText("Products Result(Page " + pageNumber + " of " + numberOfPages + ")");
     }
 
     @Override
@@ -98,6 +167,7 @@ public class ProductsFragment extends Fragment {
                 }
                 break;
         }
+        myAdapter.notifyDataSetChanged();
         return super.onContextItemSelected(item);
     }
 }

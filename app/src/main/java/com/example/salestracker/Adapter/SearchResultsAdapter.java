@@ -58,7 +58,7 @@ public class SearchResultsAdapter extends ArrayAdapter<GsonProduct.item> {
         TextView sellerTxt = view.findViewById(R.id.sellerTxt);
         ImageView imageView = view.findViewById(R.id.productImage);
         CheckBox chBox = view.findViewById(R.id.favsCheckBox);
-        String currencySign = "fak";
+        String currencySign = "";
 
         if(currentProduct != null) {
             Log.v("Dennis", currentProduct.getGalleryURL(0));
@@ -99,7 +99,7 @@ public class SearchResultsAdapter extends ArrayAdapter<GsonProduct.item> {
                     if(isChecked) {
                         MainActivity.favourites.add(currentProduct);
                         dbHelper.addProductToFavs(MainActivity.loggedInUser.getId(), currentProduct);
-                        Snackbar.make(view, "Checked!",
+                        Snackbar.make(view, "Product added in your favourites list!",
                                 Snackbar.LENGTH_LONG).show();
                     }
                     else {
@@ -110,7 +110,7 @@ public class SearchResultsAdapter extends ArrayAdapter<GsonProduct.item> {
                             }
                         }
 
-                        Snackbar.make(view,"NOT Checked!",
+                        Snackbar.make(view,"Product deleted from your favourites list",
                                 Snackbar.LENGTH_LONG).show();
                     }
                 }

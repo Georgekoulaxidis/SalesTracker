@@ -112,10 +112,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void loadDrawersContent (NavigationView navigationView) {
         LinearLayout headerView = (LinearLayout) navigationView.getHeaderView(0);
-        ImageView usrImgView = headerView.findViewById(R.id.usrImgView);
 
+        ImageView usrImgView = headerView.findViewById(R.id.usrImgView);
+        if(MainActivity.loggedInUser.getImage() == null)
+            MainActivity.loggedInUser.setImage(LoginActivity.userImage);
         usrImgView.setImageBitmap(BitmapFactory.decodeByteArray(MainActivity
-                .loggedInUser.getImage(), 0, MainActivity.loggedInUser.getImage().length));
+                    .loggedInUser.getImage(), 0, MainActivity.loggedInUser.getImage().length));
+
         TextView userName = headerView.findViewById(R.id.userNameTxt);
         TextView userEmail = headerView.findViewById(R.id.userEmailTxt);
         userName.setText(loggedInUser.getName());
@@ -201,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void ReceiveJson(ArrayList<GsonProduct.item> itemList){
+    public void ReceiveJson(ArrayList<GsonProduct.item> itemList, int totalNumberOfPages){
         Log.v("Dennis", String.valueOf(itemList));
         Bundle bundle = new Bundle();
         if(itemList != null)
@@ -210,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(itemList.size() != 0) {
             Log.d("Dennis", "ReceiveJson accessed successfully");
 
-            ProductsFragment fragObj = new ProductsFragment();
+            ProductsFragment fragObj = new ProductsFragment(String.valueOf(totalNumberOfPages));
             fragObj.setArguments(bundle);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragObj).addToBackStack(null).commit();
         }
