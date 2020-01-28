@@ -6,49 +6,71 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="20dp"
+        android:fontFamily="sans-serif"
+        android:text="Search for your favourite product"
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
         android:id="@+id/searchPlain"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="20dp"
+        android:drawableRight="@drawable/ic_search_product"
         android:ems="10"
         android:hint="Product Name"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.565"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/countrySpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <Button
         android:id="@+id/searchBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:text="@android:string/search_go"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchPlain" />
+        app:layout_constraintTop_toBottomOf="@+id/freeShippingBox" />
 
     <CheckBox
         android:id="@+id/newBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="100dp"
         android:layout_marginEnd="160dp"
         android:text="New Product"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.525"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/countrySpinner" />
 
     <CheckBox
         android:id="@+id/usedBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="100dp"
         android:layout_marginEnd="20dp"
         android:text="Used Product"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.517"
         app:layout_constraintStart_toEndOf="@+id/newBox"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/countrySpinner" />
 
     <CheckBox
         android:id="@+id/freeShippingBox"
@@ -60,45 +82,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newBox" />
 
-    <CheckBox
-        android:id="@+id/paymentBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Payment Method"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/freeShippingBox" />
-
     <Spinner
         android:id="@+id/countrySpinner"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="20dp"
         android:entries="@array/Countries"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/paymentBox" />
+        app:layout_constraintTop_toBottomOf="@+id/searchPlain" />
 
     <EditText
         android:id="@+id/minPlain"
-        android:layout_width="200dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="10dp"
         android:ems="10"
         android:hint="Min"
-        android:inputType="textPersonName"
+        android:inputType="number"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/countrySpinner" />
 
     <EditText
         android:id="@+id/maxPlain"
-        android:layout_width="200dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
         android:ems="10"
         android:hint="Max"
-        android:inputType="textPersonName"
+        android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/countrySpinner" />
 

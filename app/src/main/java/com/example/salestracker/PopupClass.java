@@ -23,8 +23,6 @@ import java.util.List;
 
 public class PopupClass {
 
-    static boolean freeShipping = false;
-
     public void showPopup(List<GsonProduct.item> products, final View view, int position, final ArrayAdapter adapter) {
         LayoutInflater inflater = (LayoutInflater) view.getContext().getSystemService(view.getContext().LAYOUT_INFLATER_SERVICE);
 
@@ -53,7 +51,7 @@ public class PopupClass {
         titleTextView.setText(currentProduct.getTitle(0));
 
         TextView priceTextView = popupView.findViewById(R.id.priceTxt);
-        String currencySign = null;
+        String currencySign = "";
         if(currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).getCurrency().equals("USD"))
             currencySign = "$";
         else if(currentProduct.getSellingStatus().get(0).getPriceDetails().get(0).getCurrency().equals("EUR"))
@@ -108,7 +106,7 @@ public class PopupClass {
                 if(isChecked) {
                     MainActivity.favourites.add(currentProduct);
                     dbHelper.addProductToFavs(MainActivity.loggedInUser.getId(), currentProduct);
-                    Snackbar.make(popupView, "Product add in Favourites list!",
+                    Snackbar.make(popupView, "Product added in your favourites list!",
                             Snackbar.LENGTH_LONG).show();
                 }
                 else {
@@ -119,7 +117,7 @@ public class PopupClass {
                         }
                     }
 
-                    Snackbar.make(popupView,"Product deleted from Favourites List!",
+                    Snackbar.make(popupView,"Product deleted from your favourites list..",
                             Snackbar.LENGTH_LONG).show();
                 }
                 adapter.notifyDataSetChanged();

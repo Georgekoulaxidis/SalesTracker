@@ -11,6 +11,10 @@ import android.widget.ListView;
 import com.example.salestracker.GsonParsing.GsonProduct;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,34 +27,33 @@ import java.util.List;
 public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.item>> {
 
     private final String LOG_TAG = "Dennis";
-    private String keyword;
-    private String newProduct;
-    private String usedProduct;
-    private String freeShipping;
-    private String payment;
-    private String min;
-    private String max;
-    private String country;
+    public static String keyword;
+    public static String newProduct;
+    public static String usedProduct;
+    public static String freeShipping;
+    public static String min;
+    public static String max;
+    public static String country;
+    private String pageNumber;
     private String jsonString;
     private Context context;
-    ListView productsList;
     GsonProduct product;
     List<GsonProduct.item> itemList = new ArrayList<>(  );
     private Integer size = 0;
 
     private ProgressDialog progressDialog;
 
-    public FetchProductsTask(Context context, String keywords, String newProduct, String usedProduct, boolean freeShipping, boolean payment, String min, String max, String country) {
+    public FetchProductsTask(Context context, String keywords, String newProduct, String usedProduct,
+                             boolean freeShipping, String min, String max, String country, int pageNumber) {
         keyword = keywords;
         this.context = context;
-        //this.productsList = productsList;
         this.newProduct = newProduct;
         this.usedProduct = usedProduct;
         this.freeShipping = String.valueOf(freeShipping);
-        this.payment = String.valueOf(payment);
         this.min = min;
         this.max = max;
         this.country = country;
+        this.pageNumber = String.valueOf(pageNumber);
 
         progressDialog = new ProgressDialog(context);
     }
@@ -81,12 +84,8 @@ public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.
             String payload = "REST-PAYLOAD";
             String keywordsParam = "keywords";
             String outputSelectorParam = "outputSelector";
-            String pages = "paginationInput.entriesPerPage";
-            //String filterName = "itemFilter.name";
-            //String filterValue = "itemFilter.value";
-            //String paramName = "itemFilter.paramName";
-            //String paramValue = "itemFilter.paramValue";
-
+            String entriesPerPage = "paginationInput.entriesPerPage";
+            String pageNumber = "paginationInput.pageNumber";
 
             Uri builtUri = Uri.parse(basicUrl).buildUpon()
                     .appendQueryParameter(operation, "findItemsByKeywords")
@@ -108,7 +107,8 @@ public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.
                     .appendQueryParameter("itemFilter(4).name", "HideDuplicateItems")
                     .appendQueryParameter("itemFilter(4).value", "true")
                     .appendQueryParameter(outputSelectorParam, "SellerInfo")
-                    .appendQueryParameter( pages, "20" )
+                    .appendQueryParameter(pageNumber, this.pageNumber)
+                    .appendQueryParameter(entriesPerPage, "20" )
                     .build();
 
             URL url = new URL(builtUri.toString());
@@ -171,8 +171,17 @@ public class FetchProductsTask extends AsyncTask<String, Void, List<GsonProduct.
         return itemList;
     }
 
-    public int getSize(){
-        return size;
+    public int getNumberOfPages() throws JSONException {
+        JSONObject response = new JSONObject(jsonString);
+        JSONArray array = response.getJSONArray("findItemsByKeywordsResponse");
+        JSONObject object = array.getJSONObject(0);
+
+        JSONArray paginationOutput = object.getJSONArray("paginationOutput");
+        JSONObject pagination = paginationOutput.getJSONObject(0);
+        JSONArray totalPages = pagination.getJSONArray("totalPages");
+        String pages = (String)totalPages.get(0);
+
+        return Integer.parseInt(pages);
     }
 
     @Override
